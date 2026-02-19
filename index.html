@@ -479,9 +479,11 @@
         ...registro,
         fecha: formatearFecha(registro.fecha)
       };
-      // Enviamos como "simple request" (text/plain) para evitar preflight CORS.
       const resp = await fetch(SHEETS_URL, {
         method: 'POST',
+        mode: 'cors',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: 'add', ...registroFormateado })
       });
       // Opcional: si tu Apps Script devuelve JSON con confirmación/ID, podrías leerlo aquí
@@ -492,22 +494,95 @@
     }
   }
 
-  // Listado completo desde Sheets
-  async function listarDesdeSheets() {
-    const resp = await fetch(SHEETS_URL + '?action=list');
-    if (!resp.ok) throw new Error('Respuesta no OK desde Sheets');
-    // Esperamos un array de objetos { id, fecha, producto, marca, precio, cantidad, unidad, unidades }
-    const data = await resp.json();
-    return Array.isArray(data) ? data : (data.data || []);
+  // Listado completo desde Sheets (JSONP en móvil porque fetch/CORS suele fallar)
+  function listarDesdeSheets() {
+    return new Promise(function(resolve, reject) {
+      var url = SHEETS_URL + '?action=list';
+      var esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (esMovil) {
+        var cb = '__sheetsList_' + Date.now();
+        var script = document.createElement('script');
+        var done = false;
+        window[cb] = function(data) {
+          if (done) return;
+          done = true;
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          var arr = Array.isArray(data) ? data : (data && data.data) ? data.data : [];
+          resolve(arr);
+        };
+        var t = setTimeout(function() {
+          if (done) return;
+          done = true;
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error('Tiempo de espera agotado'));
+        }, 15000);
+        script.onload = function() { clearTimeout(t); };
+        script.onerror = function() {
+          if (done) return;
+          done = true;
+          clearTimeout(t);
+          delete window[cb];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          reject(new Error('No se pudo conectar'));
+        };
+        script.src = url + '&callback=' + cb;
+        document.head.appendChild(script);
+        return;
+      }
+      fetch(url, { method: 'GET', mode: 'cors' })
+        .then(function(resp) {
+          if (!resp.ok) throw new Error('Respuesta no OK');
+          return resp.json();
+        })
+        .then(function(data) {
+          var arr = Array.isArray(data) ? data : (data.data || []);
+          resolve(arr);
+        })
+        .catch(function() {
+          var cb = '__sheetsList_' + Date.now();
+          var script = document.createElement('script');
+          var done = false;
+          window[cb] = function(data) {
+            if (done) return;
+            done = true;
+            delete window[cb];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            var arr = Array.isArray(data) ? data : (data && data.data) ? data.data : [];
+            resolve(arr);
+          };
+          var t = setTimeout(function() {
+            if (done) return;
+            done = true;
+            delete window[cb];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            reject(new Error('Tiempo de espera agotado'));
+          }, 15000);
+          script.onload = function() { clearTimeout(t); };
+          script.onerror = function() {
+            if (done) return;
+            done = true;
+            clearTimeout(t);
+            delete window[cb];
+            if (script.parentNode) script.parentNode.removeChild(script);
+            reject(new Error('No se pudo conectar'));
+          };
+          script.src = url + '&callback=' + cb;
+          document.head.appendChild(script);
+        });
+    });
   }
 
   // Borrado de un registro en Sheets (por id)
   async function borrarDeSheets(registro) {
     if (!registro || !registro.id) return;
     try {
-      // Enviamos como "simple request" (text/plain) para evitar preflight CORS.
       await fetch(SHEETS_URL, {
         method: 'POST',
+        mode: 'cors',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: 'delete', id: registro.id })
       });
     } catch (err) {
