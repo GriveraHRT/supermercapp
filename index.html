@@ -11,71 +11,75 @@
     }
     body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; color: var(--text-main); background: radial-gradient(circle at top, #e3f2fd 0, #eceff1 45%, #cfd8dc 100%); }
     header { text-align: center; padding: 1.8rem 0 0.8rem 0; font-size: 1.7rem; font-weight: 700; color: var(--primary); }
+    
+    /* Formulario */
     form { background: var(--card-bg); max-width: 520px; margin: 0.5rem auto 1.2rem auto; padding: 1.4rem; border-radius: 1.1rem; box-shadow: 0 18px 45px rgba(15, 76, 129, 0.16); display: flex; flex-direction: column; gap: 0.75rem; }
     label { display: block; font-size: 0.96rem; color: var(--gray); margin-bottom: 0.18em; }
     input, select { width: 100%; padding: 0.52em 0.95em; background: #f5f7fa; border: 1px solid #cfd8dc; border-radius: .55em; font-size: 1.02rem; margin-bottom: 0.2rem; outline: none; box-sizing: border-box; }
     input:focus, select:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 3px rgba(30,136,229,0.16); }
     button[type=submit] { margin-top: .7rem; padding: 0.9em 0; background: linear-gradient(135deg, #1e88e5, #1976d2); color: #fff; font-size: 1.07rem; font-weight: bold; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 16px rgba(25,118,210,0.35); }
+    
+    /* Pestañas */
     .tabs { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 1em; max-width: 960px; margin: 0 auto 1em auto;}
     .tab { padding: 0.5em 1.5em; cursor: pointer; background: #f5f5f5; border: none; font-weight: bold; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; }
     .tab.active { background: #fff; border-bottom: 2px solid #fff; color: #2196F3; }
-    .tab-content { display: none; max-width: 960px; margin: 0 auto; }
+    .tab-content { display: none; max-width: 960px; margin: 0 auto; padding: 0 10px; }
     .tab-content.active { display: block; }
-    .table-container { overflow-x: auto; background: var(--card-bg); border-radius: 0.8rem; box-shadow: 0 14px 30px rgba(15, 76, 129, 0.18); }
-    table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
-    th, td { border-bottom: 1px solid #e3e7ec; padding: 8px 12px; text-align: center; }
-    th { background: #f5f7fb; font-weight: 600; color: #455a64; }
-    .delete-btn { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 5px 12px; cursor: pointer; }
+    
+    /* Buscador */
+    .buscador-container { margin-bottom: 1rem; }
+    .buscador-input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #cfd8dc; font-size: 1rem; box-sizing: border-box; background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2390a4ae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 10px center; padding-left: 35px; }
+    
+    /* Tabla (Ahora con Scroll Horizontal en celulares) */
+    .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; background: var(--card-bg); border-radius: 0.8rem; box-shadow: 0 14px 30px rgba(15, 76, 129, 0.18); }
+    table { border-collapse: collapse; width: 100%; font-size: 0.95rem; min-width: 700px; /* Asegura que la tabla no se aplaste en móvil */ }
+    th, td { border-bottom: 1px solid #e3e7ec; padding: 12px; text-align: left; }
+    th { background: #f5f7fb; font-weight: 600; color: #455a64; white-space: nowrap; }
+    .delete-btn { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; }
     #estado-sync { text-align: center; padding: 10px; font-weight: bold; color: #1e88e5; }
     
-    @media (max-width: 768px) {
-      .tabs { flex-wrap: wrap; margin: 0 10px 10px 10px; }
-      #tabla-registros thead { display: none; }
-      #tabla-registros tbody tr { display: block; margin: 10px; padding: 10px; background: #fff; border-radius: 0.6rem; border: 1px solid #e0e7ef; }
-      #tabla-registros tbody td { display: flex; justify-content: space-between; padding: 0.4rem 0; border: none; text-align: left; }
-      #tabla-registros tbody td::before { content: attr(data-label); font-weight: 600; color: #455a64; margin-right: 0.5rem; }
-      #tabla-registros tbody td:last-child { border-top: 1px solid #eee; margin-top: 0.5rem; justify-content: flex-end; }
-      #tabla-registros tbody td:last-child::before { display: none; }
-    }
   </style>
 </head>
 <body>
-  <header>Registro de Precios de Supermercado</header>
+  <header>App Supermercado</header>
 
   <div class="tabs">
-    <button class="tab active" data-tab="formulario">Formulario</button>
-    <button class="tab" data-tab="registro">Registros</button>
+    <button class="tab active" data-tab="formulario">Añadir</button>
+    <button class="tab" data-tab="registro">Ver Lista</button>
   </div>
 
   <div id="tab-formulario" class="tab-content active">
     <form id="miForm">
-      <label>Producto: <input required name="producto" autocomplete="off" list="lista-productos" /></label>
-      <label>Marca: <input required name="marca" autocomplete="off" list="lista-marcas" /></label>
-      <label>Precio: <input required name="precio" type="number" min="0" step="any" /></label>
+      <label>Producto: <input required name="producto" autocomplete="off" placeholder="Ej: Yogurt Protein+" /></label>
+      <label>Marca: <input required name="marca" autocomplete="off" placeholder="Ej: Soprole" /></label>
+      <label>Precio Total ($): <input required name="precio" type="number" min="0" step="any" placeholder="Ej: 1500" /></label>
       <label>Cantidad (Ej: 1, 500, 1.5):
-        <input required name="cantidad" type="number" min="0" step="0.01" value="1" />
-        <select name="unidad">
-          <option value="kg">kg</option><option value="g">g</option>
-          <option value="l">l</option><option value="ml">ml</option>
-          <option value="unidad">unidad</option>
-        </select>
+        <div style="display: flex; gap: 5px;">
+          <input required name="cantidad" type="number" min="0" step="0.01" value="1" style="flex: 2; margin:0;" />
+          <select name="unidad" style="flex: 1; margin:0;">
+            <option value="kg">kg</option><option value="g">g</option>
+            <option value="l">l</option><option value="ml" selected>ml</option>
+            <option value="unidad">unid.</option>
+          </select>
+        </div>
       </label>
-      <label>Unidades compradas (Ej: 1 pack de 6): <input required name="unidades" type="number" min="1" step="1" value="1" /></label>
-      <button type="submit">Guardar en la Nube</button>
+      <label>¿Cuántos llevas? (Packs/Unidades): <input required name="unidades" type="number" min="1" step="1" value="1" /></label>
+      <button type="submit">Guardar Precio</button>
     </form>
-    <div id="info-precio" style="margin-top:0.8rem;text-align:center;font-size:0.9rem;"></div>
-    <datalist id="lista-productos"></datalist>
-    <datalist id="lista-marcas"></datalist>
+    <div id="info-precio" style="margin-top:0.8rem;text-align:center;font-size:0.9rem;font-weight:bold;"></div>
   </div>
 
   <div id="tab-registro" class="tab-content">
+    <div class="buscador-container">
+      <input type="text" id="buscador" class="buscador-input" placeholder="Filtrar por producto, marca o fecha...">
+    </div>
     <div id="estado-sync">Cargando base de datos...</div>
     <div class="table-container">
       <table id="tabla-registros">
         <thead>
           <tr>
-            <th>Fecha</th><th>Producto</th><th>Marca</th><th>Precio</th>
-            <th>Precio / Est.</th><th>Cantidad</th><th>Unidad</th><th># Unid.</th><th>Acción</th>
+            <th>Fecha y Hora</th><th>Producto</th><th>Marca</th><th>Precio Total</th>
+            <th>Precio Unitario</th><th>Cant.</th><th>Unid.</th><th>Llevas</th><th>Acción</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -84,13 +88,12 @@
   </div>
 
   <script>
-  // 🔴 ¡IMPORTANTE! PEGA AQUÍ TU NUEVA URL DE GOOGLE APPS SCRIPT
+  // 🔴 ¡IMPORTANTE! PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNQlCKSUWa5HHOvSpJt-kj_um8oifkV6ZA7qXJ9LGscqW2n5Z4ZyVXZpdFUUt5_NFz/exec';
 
-  // Base de datos en memoria (reemplaza al LocalStorage)
   let registrosEnMemoria = [];
 
-  // Pestañas
+  // Cambio de pestañas
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', function () {
       document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
@@ -99,10 +102,20 @@
     });
   });
 
-  // Utilidades
-  function formatearFecha(fechaISO) {
-    const f = new Date(fechaISO);
-    return `${String(f.getDate()).padStart(2,'0')}/${String(f.getMonth()+1).padStart(2,'0')}/${f.getFullYear()}`;
+  // --- SOLUCIÓN PROBLEMA DE LA HORA ---
+  // Esta función lee cualquier fecha (incluso las raras de Google) y las fuerza a mostrarse en tu hora local
+  function formatearFechaLocal(fechaData) {
+    if (!fechaData) return '';
+    const f = new Date(fechaData);
+    if (isNaN(f.getTime())) return fechaData; // Si falla, devuelve el texto original
+    
+    const dia = String(f.getDate()).padStart(2, '0');
+    const mes = String(f.getMonth() + 1).padStart(2, '0');
+    const anio = f.getFullYear();
+    const hora = String(f.getHours()).padStart(2, '0');
+    const min = String(f.getMinutes()).padStart(2, '0');
+    
+    return `${dia}/${mes}/${anio} ${hora}:${min}`;
   }
 
   function formatoCLP(valor) {
@@ -113,14 +126,12 @@
     const cantTotal = cantidad * unidades;
     let cantStd = cantTotal;
     let uniStd = unidad;
-
     if (unidad === 'g') { cantStd = cantTotal / 1000; uniStd = 'kg'; }
     if (unidad === 'ml') { cantStd = cantTotal / 1000; uniStd = 'l'; }
-
     return { precioPor: cantStd > 0 ? (precio * unidades) / cantStd : 0, unidadStd: uniStd };
   }
 
-  // Sincronización con Google Sheets
+  // Cargar datos
   async function cargarDesdeNube() {
     const estado = document.getElementById('estado-sync');
     estado.textContent = 'Actualizando desde la nube... ⏳';
@@ -128,53 +139,69 @@
       const resp = await fetch(SHEETS_URL);
       const data = await resp.json();
       registrosEnMemoria = Array.isArray(data) ? data : [];
-      estado.textContent = '✅ Base de datos sincronizada';
-      setTimeout(() => estado.textContent = '', 3000);
+      estado.textContent = '';
       renderTabla();
     } catch (e) {
-      estado.textContent = '❌ Error de conexión. Revisa la URL de Apps Script.';
-      console.error(e);
+      estado.textContent = '❌ Error de conexión.';
     }
   }
 
-  // Renderizar la tabla usando la memoria
-  function renderTabla() {
+  // --- SOLUCIÓN DEL FILTRO Y BÚSQUEDA ---
+  // Escuchar lo que escribes en la barra de búsqueda
+  document.getElementById('buscador').addEventListener('input', (e) => {
+    renderTabla(e.target.value.toLowerCase());
+  });
+
+  // Renderizar la tabla (ahora acepta un término de búsqueda)
+  function renderTabla(filtro = '') {
     const tbody = document.querySelector('#tabla-registros tbody');
     tbody.innerHTML = '';
     
-    // Invertimos para ver el más reciente arriba
-    const registrosMostrar = [...registrosEnMemoria].reverse();
+    let registrosMostrar = [...registrosEnMemoria].reverse();
+
+    // Si escribiste algo en el buscador, filtramos la lista
+    if (filtro) {
+      registrosMostrar = registrosMostrar.filter(reg => 
+        String(reg.producto).toLowerCase().includes(filtro) ||
+        String(reg.marca).toLowerCase().includes(filtro) ||
+        formatearFechaLocal(reg.fecha).includes(filtro)
+      );
+    }
 
     registrosMostrar.forEach(reg => {
       const std = calcularPrecioEstandar(reg.precio, reg.cantidad, reg.unidad, reg.unidades || 1);
       const textoStd = std.precioPor ? `${formatoCLP(Math.round(std.precioPor))} / 1 ${std.unidadStd}` : '-';
+      const fechaCorrecta = formatearFechaLocal(reg.fecha);
       
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="Fecha">${reg.fecha}</td>
-        <td data-label="Producto">${reg.producto}</td>
-        <td data-label="Marca">${reg.marca}</td>
-        <td data-label="Precio">${formatoCLP(reg.precio)}</td>
-        <td data-label="Precio/Est."><strong>${textoStd}</strong></td>
-        <td data-label="Cantidad">${reg.cantidad}</td>
-        <td data-label="Unidad">${reg.unidad}</td>
-        <td data-label="# Unid.">${reg.unidades || 1}</td>
-        <td data-label="Acción"><button class="delete-btn" data-id="${reg.id}">Borrar</button></td>
+        <td>${fechaCorrecta}</td>
+        <td><strong>${reg.producto}</strong></td>
+        <td>${reg.marca}</td>
+        <td>${formatoCLP(reg.precio)}</td>
+        <td style="color:#1e88e5; font-weight:bold;">${textoStd}</td>
+        <td>${reg.cantidad}</td>
+        <td>${reg.unidad}</td>
+        <td>${reg.unidades || 1}</td>
+        <td><button class="delete-btn" data-id="${reg.id}">Borrar</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  // Agregar nuevo registro
+  // Guardar datos
   document.getElementById('miForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
     btn.disabled = true;
     btn.textContent = 'Guardando...';
 
+    // Generamos la fecha exacta del momento de guardar
+    const fechaActual = new Date().toISOString(); 
+
     const nuevo = {
       id: 'id-' + Date.now(),
-      fecha: formatearFecha(new Date()),
+      fecha: fechaActual,
       action: 'add',
       producto: e.target.producto.value,
       marca: e.target.marca.value,
@@ -185,50 +212,37 @@
     };
 
     try {
-      // 1. Enviar a Sheets
-      await fetch(SHEETS_URL, {
-        method: 'POST',
-        body: JSON.stringify(nuevo)
-      });
-      // 2. Agregar a la memoria local temporal y actualizar pantalla
+      await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify(nuevo) });
       registrosEnMemoria.push(nuevo);
-      renderTabla();
+      renderTabla(document.getElementById('buscador').value.toLowerCase()); // Mantener el filtro si está activo
       e.target.reset();
-      document.getElementById('info-precio').innerHTML = '<span style="color:green">¡Guardado en la nube con éxito!</span>';
+      document.getElementById('info-precio').innerHTML = '<span style="color:green">¡Guardado con éxito! ✅</span>';
     } catch (error) {
-      alert('Error al guardar en la nube.');
+      document.getElementById('info-precio').innerHTML = '<span style="color:red">Error al guardar ❌</span>';
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Guardar en la Nube';
-      setTimeout(() => document.getElementById('info-precio').innerHTML = '', 4000);
+      btn.textContent = 'Guardar Precio';
+      setTimeout(() => document.getElementById('info-precio').innerHTML = '', 3000);
     }
   });
 
-  // Borrar registro
+  // Borrar
   document.querySelector('#tabla-registros').addEventListener('click', async (e) => {
     if (e.target.classList.contains('delete-btn')) {
-      if (!confirm('¿Seguro que deseas borrar este registro de la nube?')) return;
-      
+      if (!confirm('¿Seguro que deseas borrar este registro?')) return;
       const idBorrar = e.target.getAttribute('data-id');
-      const btn = e.target;
-      btn.textContent = '...';
-      
+      e.target.textContent = '...';
       try {
-        await fetch(SHEETS_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'delete', id: idBorrar })
-        });
-        // Filtrar de la memoria y re-renderizar
+        await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: idBorrar }) });
         registrosEnMemoria = registrosEnMemoria.filter(r => r.id !== idBorrar);
-        renderTabla();
+        renderTabla(document.getElementById('buscador').value.toLowerCase());
       } catch (err) {
-        alert('Error al intentar borrar.');
-        btn.textContent = 'Borrar';
+        alert('Error al borrar.');
+        e.target.textContent = 'Borrar';
       }
     }
   });
 
-  // Al abrir la app, cargar los datos de la nube
   cargarDesdeNube();
   </script>
 </body>
