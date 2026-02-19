@@ -180,29 +180,17 @@
   </header>
 
   <!-- 
-  ========= INSTRUCCIONES =========
-  1. Pega este código de Google Apps Script en tu proyecto de Google Sheets:
-    
-  function doPost(e) {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    var data = JSON.parse(e.postData.contents);
-    // Cambia esto para el orden de tus columnas, por ejemplo: [Producto, Marca, Precio, Cantidad, Unidad, Fecha]
-    sheet.appendRow([
-      data.producto,
-      data.marca,
-      data.precio,
-      data.cantidad,
-      data.unidad,
-      new Date()
-    ]);
-    return ContentService
-      .createTextOutput(JSON.stringify({result: 'success'}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-    
-  2. Despliega el Apps Script como Web App con acceso "Cualquiera, incluso anónimo".
-  3. Copia la URL del despliegue y reemplázala en el siguiente código (busca: GOOGLE_APPS_SCRIPT_URL).
+  ========= CONFIGURACIÓN GOOGLE SHEETS (base de datos en la nube) =========
+  Los registros se guardan en tu hoja de cálculo y se sincronizan en todos los dispositivos.
   
+  1. Abre tu hoja de cálculo de Google
+  2. Extensiones → Apps Script
+  3. Borra el contenido y pega el código del archivo GoogleAppsScript.gs de este proyecto
+  4. Guarda y despliega: Nueva implementación → Aplicación web
+     - Ejecutar como: Yo | Acceso: Cualquiera, incluso anónimo
+  5. Copia la URL del despliegue y reemplázala en SHEETS_URL (línea ~423)
+  
+  Columnas de la hoja: id | fecha | producto | marca | precio | cantidad | unidad | unidades
   ========= FIN INSTRUCCIONES =========
   -->
 
@@ -925,6 +913,7 @@
         // Intenta guardar en Google Sheets (online)
         try {
           await guardarEnSheets({
+            id: reg.id,
             fecha: reg.fecha,
             producto: reg.producto,
             marca: reg.marca,
@@ -963,16 +952,17 @@
   // -- Inicializaciones principales --
   renderTablaRegistros();
 
-  // Intento de sincronización inicial con Google Sheets
+  // Sincronización inicial: Google Sheets es la fuente principal (visible en cualquier dispositivo)
   (async () => {
     try {
       const remotos = await listarDesdeSheets();
-      if (Array.isArray(remotos) && remotos.length) {
+      if (Array.isArray(remotos)) {
         guardarRegistros(remotos);
         renderTablaRegistros();
       }
     } catch (e) {
-      console.warn('No se pudo sincronizar inicialmente con Google Sheets:', e);
+      console.warn('No se pudo cargar desde Google Sheets. Usando datos locales.', e);
+      renderTablaRegistros();
     }
   })();
   </script>
