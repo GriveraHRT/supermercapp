@@ -6,377 +6,42 @@
   <title>Registro de Precios de Supermercado</title>
   <style>
     :root {
-      --primary: #1e88e5;
-      --secondary: #eceff1;
-      --accent: #fbc02d;
-      --card-bg: #ffffff;
-      --danger: #f44336;
-      --text-main: #263238;
-      --gray: #90a4ae;
+      --primary: #1e88e5; --secondary: #eceff1; --accent: #fbc02d;
+      --card-bg: #ffffff; --danger: #f44336; --text-main: #263238; --gray: #90a4ae;
     }
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-      color: var(--text-main);
-      background: radial-gradient(circle at top, #e3f2fd 0, #eceff1 45%, #cfd8dc 100%);
-    }
-    header {
-      text-align: center;
-      padding: 1.8rem 0 0.8rem 0;
-      font-size: 1.7rem;
-      font-weight: 700;
-      letter-spacing: .03em;
-      color: var(--primary);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.08);
-    }
-    form {
-      background: var(--card-bg);
-      max-width: 520px;
-      margin: 0.5rem auto 1.2rem auto;
-      padding: 1.4rem 1.6rem 1.2rem 1.6rem;
-      border-radius: 1.1rem;
-      box-shadow:
-        0 18px 45px rgba(15, 76, 129, 0.16),
-        0 1px 2px rgba(0, 0, 0, 0.04);
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      border: 1px solid #e3f2fd;
-    }
-    label {
-      display: block;
-      font-size: 0.96rem;
-      color: var(--gray);
-      margin-bottom: 0.18em;
-    }
-    input[type=text],
-    input[type=number],
-    select {
-      width: 100%;
-      padding: 0.52em 0.95em;
-      background: #f5f7fa;
-      border: 1px solid #cfd8dc;
-      border-radius: .55em;
-      font-size: 1.02rem;
-      color: var(--text-main);
-      margin-bottom: 0.2rem;
-      outline: none;
-      box-sizing: border-box;
-      transition: border-color 0.22s, box-shadow 0.22s, background 0.22s;
-    }
-    input:focus, select:focus {
-      border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(30,136,229,0.16);
-    }
-    .form-row {
-      display: flex;
-      gap: .8em;
-    }
-    .form-row > div {
-      flex: 1 0 0;
-    }
-    button[type=submit] {
-      margin-top: .7rem;
-      padding: 0.9em 0;
-      background: linear-gradient(135deg, #1e88e5, #1976d2);
-      color: #fff;
-      font-size: 1.07rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 999px;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(25,118,210,0.35);
-      transition: background 0.18s, box-shadow 0.18s, transform 0.08s;
-    }
-    button[type=submit]:hover,
-    button[type=submit]:focus {
-      background: linear-gradient(135deg, #1565c0, #0d47a1);
-      box-shadow: 0 8px 20px rgba(13,71,161,0.45);
-      transform: translateY(-1px);
-    }
-    main {
-      max-width: 960px;
-      margin: 0 auto 2.4rem auto;
-    }
-    .registros-lista {
-      display: flex;
-      flex-direction: column;
-      gap: 1.1rem;
-    }
-    .tarjeta {
-      background: var(--card-bg);
-      border-radius: .65em;
-      box-shadow: 0 2px 10px rgba(30,136,229,0.10), 0 0px 0.9px #26323814;
-      padding: 1.0em 1.1em 0.81em 1.1em;
-      display: flex;
-      flex-direction: column;
-      gap: 0.22em;
-      position: relative;
-      overflow: hidden;
-    }
-    .tarjeta .nombre {
-      font-weight: bold;
-      font-size: 1.05rem;
-      color: var(--primary);
-      margin-bottom: 0.27em;
-    }
-    .tarjeta .marca {
-      color: var(--gray);
-      font-size: 0.96em;
-      margin-bottom: .14em;
-    }
-    .detalle {
-      font-size: 1.08em;
-      margin-bottom: 0.14em;
-    }
-    .tarjeta .precio-unidad {
-      background: var(--accent);
-      color: var(--primary);
-      border-radius: .33em;
-      padding: .19em .52em;
-      font-size: .99em;
-      display: inline-block;
-      margin-top: .41em;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-    }
-    .eliminar-btn {
-      position: absolute;
-      top: 1.0em;
-      right: 1.1em;
-      background: var(--danger);
-      color: #fff;
-      border: none;
-      border-radius: .6em;
-      padding: 0.26em 0.78em;
-      font-size: 1.05em;
-      cursor: pointer;
-      opacity: 0.75;
-      transition: opacity 0.18s, box-shadow 0.15s;
-      box-shadow: 0 1.3px 8px #f443360f;
-    }
-    .eliminar-btn:hover {
-      opacity: 1;
-      box-shadow: 0 1.2px 12px #f4433619;
-    }
-    @media (max-width: 600px) {
-      form, main {
-        max-width: 99vw;
-        padding: 0 1.7vw;
-      }
-      .tarjeta {
-        font-size: 0.98em;
-        padding-left: 0.82em;
-        padding-right:0.82em;
-      }
+    body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; color: var(--text-main); background: radial-gradient(circle at top, #e3f2fd 0, #eceff1 45%, #cfd8dc 100%); }
+    header { text-align: center; padding: 1.8rem 0 0.8rem 0; font-size: 1.7rem; font-weight: 700; color: var(--primary); }
+    form { background: var(--card-bg); max-width: 520px; margin: 0.5rem auto 1.2rem auto; padding: 1.4rem; border-radius: 1.1rem; box-shadow: 0 18px 45px rgba(15, 76, 129, 0.16); display: flex; flex-direction: column; gap: 0.75rem; }
+    label { display: block; font-size: 0.96rem; color: var(--gray); margin-bottom: 0.18em; }
+    input, select { width: 100%; padding: 0.52em 0.95em; background: #f5f7fa; border: 1px solid #cfd8dc; border-radius: .55em; font-size: 1.02rem; margin-bottom: 0.2rem; outline: none; box-sizing: border-box; }
+    input:focus, select:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 3px rgba(30,136,229,0.16); }
+    button[type=submit] { margin-top: .7rem; padding: 0.9em 0; background: linear-gradient(135deg, #1e88e5, #1976d2); color: #fff; font-size: 1.07rem; font-weight: bold; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 16px rgba(25,118,210,0.35); }
+    .tabs { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 1em; max-width: 960px; margin: 0 auto 1em auto;}
+    .tab { padding: 0.5em 1.5em; cursor: pointer; background: #f5f5f5; border: none; font-weight: bold; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; }
+    .tab.active { background: #fff; border-bottom: 2px solid #fff; color: #2196F3; }
+    .tab-content { display: none; max-width: 960px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+    .table-container { overflow-x: auto; background: var(--card-bg); border-radius: 0.8rem; box-shadow: 0 14px 30px rgba(15, 76, 129, 0.18); }
+    table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+    th, td { border-bottom: 1px solid #e3e7ec; padding: 8px 12px; text-align: center; }
+    th { background: #f5f7fb; font-weight: 600; color: #455a64; }
+    .delete-btn { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 5px 12px; cursor: pointer; }
+    #estado-sync { text-align: center; padding: 10px; font-weight: bold; color: #1e88e5; }
+    
+    @media (max-width: 768px) {
+      .tabs { flex-wrap: wrap; margin: 0 10px 10px 10px; }
+      #tabla-registros thead { display: none; }
+      #tabla-registros tbody tr { display: block; margin: 10px; padding: 10px; background: #fff; border-radius: 0.6rem; border: 1px solid #e0e7ef; }
+      #tabla-registros tbody td { display: flex; justify-content: space-between; padding: 0.4rem 0; border: none; text-align: left; }
+      #tabla-registros tbody td::before { content: attr(data-label); font-weight: 600; color: #455a64; margin-right: 0.5rem; }
+      #tabla-registros tbody td:last-child { border-top: 1px solid #eee; margin-top: 0.5rem; justify-content: flex-end; }
+      #tabla-registros tbody td:last-child::before { display: none; }
     }
   </style>
 </head>
 <body>
-  <header>
-    Registro de Precios de Supermercado
-  </header>
+  <header>Registro de Precios de Supermercado</header>
 
-  <!-- 
-  ========= CONFIGURACIÓN GOOGLE SHEETS (base de datos en la nube) =========
-  Los registros se guardan en tu hoja de cálculo y se sincronizan en todos los dispositivos.
-  
-  1. Abre tu hoja de cálculo de Google
-  2. Extensiones → Apps Script
-  3. Borra el contenido y pega el código del archivo GoogleAppsScript.gs de este proyecto
-  4. Guarda y despliega: Nueva implementación → Aplicación web
-     - Ejecutar como: Yo | Acceso: Cualquiera, incluso anónimo
-  5. Copia la URL del despliegue y reemplázala en SHEETS_URL (línea ~423)
-  
-  Columnas de la hoja: id | fecha | producto | marca | precio | cantidad | unidad | unidades
-  ========= FIN INSTRUCCIONES =========
-  -->
-
-  <!-- Estilos para pestañas y tabla de registros -->
-  <style>
-  .tabs {
-    display: flex;
-    border-bottom: 2px solid #ccc;
-    margin-bottom: 1em;
-  }
-  .tab {
-    padding: 0.5em 1.5em;
-    cursor: pointer;
-    background: #f5f5f5;
-    border: none;
-    outline: none;
-    font-weight: bold;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    margin-right: 2px;
-  }
-  .tab.active {
-    background: #fff;
-    border-bottom: 2px solid #fff;
-    color: #2196F3;
-  }
-  .tab-content {
-    display: none;
-  }
-  .tab-content.active {
-    display: block;
-  }
-  .table-container {
-    overflow-x: auto;
-    overflow-y: visible;
-    margin-top: 0.6rem;
-    border-radius: 0.8rem;
-    box-shadow:
-      0 14px 30px rgba(15, 76, 129, 0.18),
-      0 1px 2px rgba(0, 0, 0, 0.03);
-    background: var(--card-bg);
-    border: 1px solid #e0e7ef;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 0;
-    font-size: 0.95rem;
-  }
-  th, td {
-    border-bottom: 1px solid #e3e7ec;
-    padding: 8px 12px;
-    text-align: center;
-  }
-  th {
-    background: linear-gradient(180deg, #f5f7fb, #edf2f7);
-    cursor: pointer;
-    user-select: none;
-    font-weight: 600;
-    color: #455a64;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-  tbody tr:nth-child(even) {
-    background: #fafbfc;
-  }
-  tbody tr:hover {
-    background: #e3f2fd;
-    transition: background 0.18s;
-  }
-  .filter-input {
-    margin: 0 4px;
-    max-width: 110px;
-  }
-  .delete-btn {
-    background: #e53935;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 3px 10px;
-    cursor: pointer;
-  }
-  .delete-btn:hover {
-    background: #c62828;
-  }
-  /* Estilos para filtros tipo Excel en cabeceras */
-  #tabla-registros th {
-    position: relative;
-    padding-right: 20px;
-    white-space: nowrap;
-  }
-  .header-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-  }
-  .filter-icon {
-    font-size: 0.7rem;
-    opacity: 0.6;
-  }
-  .header-label.sortable:hover .filter-icon {
-    opacity: 1;
-  }
-  .filter-menu {
-    position: fixed;
-    z-index: 10;
-    background: #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    padding: 6px 8px;
-    min-width: 180px;
-    max-height: 260px;
-    overflow: auto;
-    font-size: 0.85rem;
-  }
-  .filter-menu h4 {
-    margin: 4px 0 6px 0;
-    font-size: 0.86rem;
-    font-weight: 600;
-  }
-  .filter-menu button {
-    margin: 2px 2px 4px 0;
-    padding: 2px 6px;
-    font-size: 0.78rem;
-    cursor: pointer;
-  }
-  .filter-menu label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 2px;
-    cursor: pointer;
-  }
-  /* Optimización móvil: tabla como tarjetas */
-  @media (max-width: 768px) {
-    header { font-size: 1.3rem; padding: 1.2rem 0.5rem; }
-    .tabs { flex-wrap: wrap; }
-    .tab { padding: 0.5em 1em; font-size: 0.9rem; }
-    .table-container { margin: 0.5rem; border-radius: 0.5rem; overflow-x: visible; }
-    #tabla-registros thead { display: none; }
-    #tabla-registros tbody tr {
-      display: block;
-      margin-bottom: 1rem;
-      padding: 1rem;
-      background: #fff;
-      border-radius: 0.6rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border: 1px solid #e0e7ef;
-    }
-    #tabla-registros tbody td {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.4rem 0;
-      border: none;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-    #tabla-registros tbody td::before {
-      content: attr(data-label);
-      font-weight: 600;
-      color: #455a64;
-      margin-right: 0.5rem;
-      flex-shrink: 0;
-    }
-    #tabla-registros tbody td:last-child {
-      border-top: 1px solid #eee;
-      margin-top: 0.5rem;
-      padding-top: 0.8rem;
-      justify-content: flex-end;
-    }
-    #tabla-registros tbody td:last-child::before { display: none; }
-    .delete-btn {
-      min-height: 44px;
-      min-width: 44px;
-      padding: 0.5rem 1rem;
-      font-size: 0.95rem;
-    }
-    form { padding: 1rem; }
-    button[type=submit] { min-height: 48px; }
-  }
-  </style>
-
-  <!-- Pestañas y contenido -->
   <div class="tabs">
     <button class="tab active" data-tab="formulario">Formulario</button>
     <button class="tab" data-tab="registro">Registros</button>
@@ -384,70 +49,33 @@
 
   <div id="tab-formulario" class="tab-content active">
     <form id="miForm">
-      <label>
-        Producto:
-        <input required name="producto" autocomplete="off" list="lista-productos" />
-      </label>
-      <label>
-        Marca:
-        <input required name="marca" autocomplete="off" list="lista-marcas" />
-      </label>
-      <label>
-        Precio:
-        <input required name="precio" type="number" min="0" step="any" />
-      </label>
-      <label>
-        Cantidad:
-        <!-- Editamos el step a 1 para evitar incrementos inapropiados -->
-        <input required name="cantidad" type="number" min="0" step="1" value="1" />
+      <label>Producto: <input required name="producto" autocomplete="off" list="lista-productos" /></label>
+      <label>Marca: <input required name="marca" autocomplete="off" list="lista-marcas" /></label>
+      <label>Precio: <input required name="precio" type="number" min="0" step="any" /></label>
+      <label>Cantidad (Ej: 1, 500, 1.5):
+        <input required name="cantidad" type="number" min="0" step="0.01" value="1" />
         <select name="unidad">
-          <option value="kg">kg</option>
-          <option value="g">g</option>
-          <option value="l">l</option>
-          <option value="ml">ml</option>
+          <option value="kg">kg</option><option value="g">g</option>
+          <option value="l">l</option><option value="ml">ml</option>
           <option value="unidad">unidad</option>
         </select>
       </label>
-      <label>
-        <span>Cantidad de Unidades Compradas:</span>
-        <input required name="unidades" type="number" min="1" step="1" value="1" />
-      </label>
-      <button type="submit">Agregar</button>
+      <label>Unidades compradas (Ej: 1 pack de 6): <input required name="unidades" type="number" min="1" step="1" value="1" /></label>
+      <button type="submit">Guardar en la Nube</button>
     </form>
-    <div id="info-precio" style="margin-top:0.8rem;font-size:0.9rem;color:var(--text-main);"></div>
+    <div id="info-precio" style="margin-top:0.8rem;text-align:center;font-size:0.9rem;"></div>
     <datalist id="lista-productos"></datalist>
     <datalist id="lista-marcas"></datalist>
   </div>
 
   <div id="tab-registro" class="tab-content">
-    <div id="mensaje-sync" style="display:none;padding:0.6rem 1rem;margin:0.5rem 1rem;border-radius:0.5rem;font-size:0.9rem;background:#fff3e0;color:#e65100;border:1px solid #ffcc80;"></div>
+    <div id="estado-sync">Cargando base de datos...</div>
     <div class="table-container">
       <table id="tabla-registros">
         <thead>
           <tr>
-            <th data-sort="fecha" data-type="text">
-              <span class="header-label sortable">Fecha <span class="filter-icon">▼</span></span>
-            </th>
-            <th data-sort="producto" data-type="text">
-              <span class="header-label sortable">Producto <span class="filter-icon">▼</span></span>
-            </th>
-            <th data-sort="marca" data-type="text">
-              <span class="header-label sortable">Marca <span class="filter-icon">▼</span></span>
-            </th>
-            <th data-sort="precio" data-type="number">
-              <span class="header-label sortable">Precio <span class="filter-icon">⇅</span></span>
-            </th>
-            <th>Precio / unid. est.</th>
-            <th data-sort="cantidad" data-type="number">
-              <span class="header-label sortable">Cantidad <span class="filter-icon">⇅</span></span>
-            </th>
-            <th data-sort="unidad" data-type="text">
-              <span class="header-label sortable">Unidad <span class="filter-icon">▼</span></span>
-            </th>
-            <th data-sort="unidades" data-type="number">
-              <span class="header-label sortable"># Unidades <span class="filter-icon">⇅</span></span>
-            </th>
-            <th>Acción</th>
+            <th>Fecha</th><th>Producto</th><th>Marca</th><th>Precio</th>
+            <th>Precio / Est.</th><th>Cantidad</th><th>Unidad</th><th># Unid.</th><th>Acción</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -455,653 +83,153 @@
     </div>
   </div>
 
-  <!-- Funciones de sincronización con Google Sheets -->
   <script>
-  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNQlCKSUWa5HHOvSpJt-kj_um8oifkV6ZA7qXJ9LGscqW2n5Z4ZyVXZpdFUUt5_NFz/exec'; // <-- misma URL de tu Web App
+  // 🔴 ¡IMPORTANTE! PEGA AQUÍ TU NUEVA URL DE GOOGLE APPS SCRIPT
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNQlCKSUWa5HHOvSpJt-kj_um8oifkV6ZA7qXJ9LGscqW2n5Z4ZyVXZpdFUUt5_NFz/exec';
 
-  // Función para formatear fecha a formato estándar DD/MM/YYYY HH:MM:SS
-  function formatearFecha(fechaISO) {
-    const fecha = new Date(fechaISO);
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const año = fecha.getFullYear();
-    const horas = String(fecha.getHours()).padStart(2, '0');
-    const minutos = String(fecha.getMinutes()).padStart(2, '0');
-    const segundos = String(fecha.getSeconds()).padStart(2, '0');
-    return `${dia}/${mes}/${año} ${horas}:${minutos}:${segundos}`;
-  }
+  // Base de datos en memoria (reemplaza al LocalStorage)
+  let registrosEnMemoria = [];
 
-  // Alta de registros en Sheets
-  async function guardarEnSheets(registro) {
-    try {
-      // Formateamos la fecha antes de enviarla
-      const registroFormateado = {
-        ...registro,
-        fecha: formatearFecha(registro.fecha)
-      };
-      const resp = await fetch(SHEETS_URL, {
-        method: 'POST',
-        mode: 'cors',
-        redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'add', ...registroFormateado })
-      });
-      // Opcional: si tu Apps Script devuelve JSON con confirmación/ID, podrías leerlo aquí
-      // const data = await resp.json();
-      // return data;
-    } catch (err) {
-      console.error('Error al enviar a Google Sheets:', err);
-    }
-  }
-
-  // Listado completo desde Sheets (JSONP en móvil porque fetch/CORS suele fallar)
-  function listarDesdeSheets() {
-    return new Promise(function(resolve, reject) {
-      var url = SHEETS_URL + '?action=list';
-      var esMovil = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      if (esMovil) {
-        var cb = '__sheetsList_' + Date.now();
-        var script = document.createElement('script');
-        var done = false;
-        window[cb] = function(data) {
-          if (done) return;
-          done = true;
-          delete window[cb];
-          if (script.parentNode) script.parentNode.removeChild(script);
-          var arr = Array.isArray(data) ? data : (data && data.data) ? data.data : [];
-          resolve(arr);
-        };
-        var t = setTimeout(function() {
-          if (done) return;
-          done = true;
-          delete window[cb];
-          if (script.parentNode) script.parentNode.removeChild(script);
-          reject(new Error('Tiempo de espera agotado'));
-        }, 15000);
-        script.onload = function() { clearTimeout(t); };
-        script.onerror = function() {
-          if (done) return;
-          done = true;
-          clearTimeout(t);
-          delete window[cb];
-          if (script.parentNode) script.parentNode.removeChild(script);
-          reject(new Error('No se pudo conectar'));
-        };
-        script.src = url + '&callback=' + cb;
-        document.head.appendChild(script);
-        return;
-      }
-      fetch(url, { method: 'GET', mode: 'cors' })
-        .then(function(resp) {
-          if (!resp.ok) throw new Error('Respuesta no OK');
-          return resp.json();
-        })
-        .then(function(data) {
-          var arr = Array.isArray(data) ? data : (data.data || []);
-          resolve(arr);
-        })
-        .catch(function() {
-          var cb = '__sheetsList_' + Date.now();
-          var script = document.createElement('script');
-          var done = false;
-          window[cb] = function(data) {
-            if (done) return;
-            done = true;
-            delete window[cb];
-            if (script.parentNode) script.parentNode.removeChild(script);
-            var arr = Array.isArray(data) ? data : (data && data.data) ? data.data : [];
-            resolve(arr);
-          };
-          var t = setTimeout(function() {
-            if (done) return;
-            done = true;
-            delete window[cb];
-            if (script.parentNode) script.parentNode.removeChild(script);
-            reject(new Error('Tiempo de espera agotado'));
-          }, 15000);
-          script.onload = function() { clearTimeout(t); };
-          script.onerror = function() {
-            if (done) return;
-            done = true;
-            clearTimeout(t);
-            delete window[cb];
-            if (script.parentNode) script.parentNode.removeChild(script);
-            reject(new Error('No se pudo conectar'));
-          };
-          script.src = url + '&callback=' + cb;
-          document.head.appendChild(script);
-        });
+  // Pestañas
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById('tab-' + this.getAttribute('data-tab')).classList.add('active');
     });
-  }
+  });
 
-  // Borrado de un registro en Sheets (por id)
-  async function borrarDeSheets(registro) {
-    if (!registro || !registro.id) return;
-    try {
-      await fetch(SHEETS_URL, {
-        method: 'POST',
-        mode: 'cors',
-        redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'delete', id: registro.id })
-      });
-    } catch (err) {
-      console.error('Error al borrar en Google Sheets:', err);
-    }
-  }
-  </script>
-
-  <!-- Lógica de pestañas, filtros, orientación de precios y sincronización -->
-  <script>
-  // --- Utilidades de conversión y formato de precios ---
-  function convertirUnidadEstandar(cantidad, unidad) {
-    switch (unidad) {
-      case 'g':
-        return { cantidadEstandar: cantidad / 1000, unidadEstandar: 'kg' };
-      case 'kg':
-        return { cantidadEstandar: cantidad, unidadEstandar: 'kg' };
-      case 'ml':
-        return { cantidadEstandar: cantidad / 1000, unidadEstandar: 'l' };
-      case 'l':
-        return { cantidadEstandar: cantidad, unidadEstandar: 'l' };
-      case 'unidad':
-      default:
-        return { cantidadEstandar: cantidad, unidadEstandar: 'unidad' };
-    }
-  }
-
-  function calcularPrecioPorUnidad(precioUnitario, cantidadPorUnidad, unidad, unidades) {
-    const totalUnidades = unidades || 1;
-    const totalCantidad = cantidadPorUnidad * totalUnidades;
-    const conversion = convertirUnidadEstandar(totalCantidad, unidad);
-    if (conversion.cantidadEstandar <= 0) {
-      return { precioPor: 0, unidadEstandar: conversion.unidadEstandar };
-    }
-    const precioTotal = precioUnitario * totalUnidades;
-    const precioPor = precioTotal / conversion.cantidadEstandar;
-    return { precioPor, unidadEstandar: conversion.unidadEstandar };
+  // Utilidades
+  function formatearFecha(fechaISO) {
+    const f = new Date(fechaISO);
+    return `${String(f.getDate()).padStart(2,'0')}/${String(f.getMonth()+1).padStart(2,'0')}/${f.getFullYear()}`;
   }
 
   function formatoCLP(valor) {
-    return '$ ' + Number(valor || 0).toLocaleString('es-CL', { maximumFractionDigits: 0 });
+    return '$ ' + Number(valor || 0).toLocaleString('es-CL');
   }
 
-  function calcularPrecioEstandarDeRegistro(reg) {
-    return calcularPrecioPorUnidad(
-      Number(reg.precio),
-      Number(reg.cantidad),
-      reg.unidad,
-      Number(reg.unidades || 1)
-    );
+  function calcularPrecioEstandar(precio, cantidad, unidad, unidades) {
+    const cantTotal = cantidad * unidades;
+    let cantStd = cantTotal;
+    let uniStd = unidad;
+
+    if (unidad === 'g') { cantStd = cantTotal / 1000; uniStd = 'kg'; }
+    if (unidad === 'ml') { cantStd = cantTotal / 1000; uniStd = 'l'; }
+
+    return { precioPor: cantStd > 0 ? (precio * unidades) / cantStd : 0, unidadStd: uniStd };
   }
 
-  // --- Lógica de pestañas ---
-  document.querySelectorAll('.tab').forEach((tab) => {
-    tab.addEventListener('click', function () {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
-      this.classList.add('active');
-      const showTab = 'tab-' + this.getAttribute('data-tab');
-      document.getElementById(showTab).classList.add('active');
-      if (showTab === 'tab-registro') renderTablaRegistros();
-    });
-  });
-
-  // --- Local y Google Sheets utilidad ---
-  function obtenerRegistros() {
+  // Sincronización con Google Sheets
+  async function cargarDesdeNube() {
+    const estado = document.getElementById('estado-sync');
+    estado.textContent = 'Actualizando desde la nube... ⏳';
     try {
-      const d = JSON.parse(localStorage.getItem('registros'));
-      return Array.isArray(d) ? d : [];
-    } catch {
-      return [];
+      const resp = await fetch(SHEETS_URL);
+      const data = await resp.json();
+      registrosEnMemoria = Array.isArray(data) ? data : [];
+      estado.textContent = '✅ Base de datos sincronizada';
+      setTimeout(() => estado.textContent = '', 3000);
+      renderTabla();
+    } catch (e) {
+      estado.textContent = '❌ Error de conexión. Revisa la URL de Apps Script.';
+      console.error(e);
     }
   }
-  function guardarRegistros(data) {
-    localStorage.setItem('registros', JSON.stringify(data));
-  }
-  // Asumimos que existe la función guardarEnSheets y borrarDeSheets
 
-  // --- Renderizado de registros en tabla con filtros y orden ---
-  let ultimoSort = { campo: null, asc: true };
-  const filtrosTexto = {}; // { campo: Set<string> } para columnas de texto
-
-  function actualizarSugerenciasDesdeRegistros() {
-    const registros = obtenerRegistros();
-    const setProductos = new Set();
-    const setMarcas = new Set();
-
-    registros.forEach(reg => {
-      if (reg.producto) setProductos.add(String(reg.producto).trim());
-      if (reg.marca) setMarcas.add(String(reg.marca).trim());
-    });
-
-    const dlProd = document.getElementById('lista-productos');
-    const dlMarca = document.getElementById('lista-marcas');
-    if (!dlProd || !dlMarca) return;
-
-    dlProd.innerHTML = '';
-    dlMarca.innerHTML = '';
-
-    Array.from(setProductos).sort().forEach(valor => {
-      const opt = document.createElement('option');
-      opt.value = valor;
-      dlProd.appendChild(opt);
-    });
-
-    Array.from(setMarcas).sort().forEach(valor => {
-      const opt = document.createElement('option');
-      opt.value = valor;
-      dlMarca.appendChild(opt);
-    });
-  }
-
-  function aplicarFiltros(registros) {
-    return registros.filter(reg => {
-      // filtrosTexto mantiene valores exactos permitidos por campo
-      for (const campo in filtrosTexto) {
-        const setValores = filtrosTexto[campo];
-        if (setValores && setValores.size > 0) {
-          let valor = reg[campo];
-          if (campo === 'fecha') {
-            valor = (reg.fecha || '').substring(0, 10);
-          }
-          const clave = String(valor ?? '').toLowerCase();
-          if (!setValores.has(clave)) return false;
-        }
-      }
-      return true;
-    });
-  }
-
-  function sortRegistros(registros, campo, asc) {
-    return registros.slice().sort((a, b) => {
-      let va = a[campo] ?? '', vb = b[campo] ?? '';
-      if (campo === 'precio' || campo === 'cantidad' || campo === 'unidades') {
-        va = parseFloat(va); vb = parseFloat(vb);
-        if (isNaN(va)) va = 0; if (isNaN(vb)) vb = 0;
-      }
-      if (campo === 'fecha') {
-        va = a.fecha || ''; vb = b.fecha || '';
-      }
-      if (va < vb) return asc ? -1 : 1;
-      if (va > vb) return asc ? 1 : -1;
-      return 0;
-    });
-  }
-
-  // Renderizamos la tabla de registros
-  function renderTablaRegistros() {
-    actualizarSugerenciasDesdeRegistros();
-    let registros = obtenerRegistros();
-    // Filtros por cabecera
-    registros = aplicarFiltros(registros);
-
-    // Ordenamiento
-    if (ultimoSort.campo) {
-      registros = sortRegistros(registros, ultimoSort.campo, ultimoSort.asc);
-    }
-
-    // Render
-    const tbody = document.getElementById('tabla-registros').querySelector('tbody');
+  // Renderizar la tabla usando la memoria
+  function renderTabla() {
+    const tbody = document.querySelector('#tabla-registros tbody');
     tbody.innerHTML = '';
-    for (const reg of registros) {
-      const std = calcularPrecioEstandarDeRegistro(reg);
-      const textoStd = std.precioPor
-        ? `${formatoCLP(Math.round(std.precioPor))} / 1 ${std.unidadEstandar}`
-        : '';
+    
+    // Invertimos para ver el más reciente arriba
+    const registrosMostrar = [...registrosEnMemoria].reverse();
+
+    registrosMostrar.forEach(reg => {
+      const std = calcularPrecioEstandar(reg.precio, reg.cantidad, reg.unidad, reg.unidades || 1);
+      const textoStd = std.precioPor ? `${formatoCLP(Math.round(std.precioPor))} / 1 ${std.unidadStd}` : '-';
+      
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td data-label="Fecha">${(reg.fecha || '').substring(0, 19).replace('T', ' ')}</td>
+        <td data-label="Fecha">${reg.fecha}</td>
         <td data-label="Producto">${reg.producto}</td>
         <td data-label="Marca">${reg.marca}</td>
-        <td data-label="Precio">${reg.precio}</td>
-        <td data-label="Precio/unid.">${textoStd}</td>
+        <td data-label="Precio">${formatoCLP(reg.precio)}</td>
+        <td data-label="Precio/Est."><strong>${textoStd}</strong></td>
         <td data-label="Cantidad">${reg.cantidad}</td>
         <td data-label="Unidad">${reg.unidad}</td>
-        <td data-label="# Unidades">${reg.unidades ?? ''}</td>
-        <td data-label="">
-          <button class="delete-btn" data-id="${reg.id}">Borrar</button>
-        </td>
+        <td data-label="# Unid.">${reg.unidades || 1}</td>
+        <td data-label="Acción"><button class="delete-btn" data-id="${reg.id}">Borrar</button></td>
       `;
       tbody.appendChild(tr);
-    }
-  }
-
-  // Manejo de orden y filtros desde las cabeceras
-  let menuAbierto = null;
-
-  function cerrarMenuFiltro() {
-    if (menuAbierto && menuAbierto.parentElement) {
-      menuAbierto.parentElement.removeChild(menuAbierto);
-    }
-    menuAbierto = null;
-  }
-
-  function abrirMenuFiltro(th) {
-    cerrarMenuFiltro();
-    const campo = th.getAttribute('data-sort');
-    const registros = obtenerRegistros();
-
-    // Reunimos valores únicos
-    const valoresSet = new Set();
-    registros.forEach(reg => {
-      let valor = reg[campo];
-      if (campo === 'fecha') valor = (reg.fecha || '').substring(0, 10);
-      const clave = String(valor ?? '').toLowerCase();
-      if (clave) valoresSet.add(clave);
     });
-
-    const menu = document.createElement('div');
-    menu.className = 'filter-menu';
-    const valores = Array.from(valoresSet).sort();
-
-    const seleccionados = filtrosTexto[campo] ? new Set(filtrosTexto[campo]) : new Set(valores);
-
-    menu.innerHTML = `
-      <h4>Filtrar ${campo}</h4>
-      <div class="acciones"></div>
-      <div class="opciones"></div>
-    `;
-
-    const divAcciones = menu.querySelector('.acciones');
-    const divOpciones = menu.querySelector('.opciones');
-
-    const btnTodos = document.createElement('button');
-    btnTodos.type = 'button';
-    btnTodos.textContent = 'Seleccionar todo';
-    btnTodos.onclick = () => {
-      divOpciones.querySelectorAll('input[type=checkbox]').forEach(ch => ch.checked = true);
-    };
-
-    const btnNinguno = document.createElement('button');
-    btnNinguno.type = 'button';
-    btnNinguno.textContent = 'Limpiar';
-    btnNinguno.onclick = () => {
-      divOpciones.querySelectorAll('input[type=checkbox]').forEach(ch => ch.checked = false);
-    };
-
-    divAcciones.appendChild(btnTodos);
-    divAcciones.appendChild(btnNinguno);
-
-    valores.forEach(valor => {
-      const label = document.createElement('label');
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.checked = seleccionados.size === 0 || seleccionados.has(valor);
-      input.value = valor;
-      const texto = document.createElement('span');
-      texto.textContent = valor || '(vacío)';
-      label.appendChild(input);
-      label.appendChild(texto);
-      divOpciones.appendChild(label);
-    });
-
-    const btnAplicar = document.createElement('button');
-    btnAplicar.type = 'button';
-    btnAplicar.textContent = 'Aplicar';
-    btnAplicar.style.marginTop = '4px';
-    btnAplicar.onclick = () => {
-      const nuevos = new Set();
-      divOpciones.querySelectorAll('input[type=checkbox]').forEach(ch => {
-        if (ch.checked) nuevos.add(ch.value);
-      });
-      filtrosTexto[campo] = nuevos;
-      cerrarMenuFiltro();
-      renderTablaRegistros();
-    };
-
-    const btnCerrar = document.createElement('button');
-    btnCerrar.type = 'button';
-    btnCerrar.textContent = 'Cerrar';
-    btnCerrar.onclick = cerrarMenuFiltro;
-
-    divAcciones.appendChild(btnAplicar);
-    divAcciones.appendChild(btnCerrar);
-
-    menu.addEventListener('click', ev => ev.stopPropagation());
-
-    // Posicionamos el menú en coordenadas de ventana para que no se corte
-    const rect = th.getBoundingClientRect();
-    menu.style.left = rect.left + 'px';
-    menu.style.top = (rect.bottom + 2) + 'px';
-
-    document.body.appendChild(menu);
-    menuAbierto = menu;
   }
 
-  document.addEventListener('click', () => cerrarMenuFiltro());
+  // Agregar nuevo registro
+  document.getElementById('miForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
 
-  // Ordenamiento / filtros por encabezado
-  document.querySelectorAll('#tabla-registros th[data-sort]').forEach(th => {
-    th.addEventListener('click', function (ev) {
-      ev.stopPropagation();
-      const campo = th.getAttribute('data-sort');
-      const tipo = th.getAttribute('data-type') || 'text';
-
-      if (tipo === 'number') {
-        // Solo ordenar asc/desc
-        const asc = ultimoSort.campo === campo ? !ultimoSort.asc : true;
-        ultimoSort = { campo, asc };
-        renderTablaRegistros();
-      } else {
-        // Abrir menú de filtro tipo Excel
-        abrirMenuFiltro(th);
-      }
-    });
-  });
-  // Manejo de borrado y sync con Google Sheets
-  document.getElementById('tabla-registros').addEventListener('click', async function (ev) {
-    if (ev.target.classList.contains('delete-btn')) {
-      const id = ev.target.getAttribute('data-id');
-      let registros = obtenerRegistros();
-      const index = registros.findIndex(r => r.id === id);
-      if (index >= 0) {
-        const regElim = registros[index];
-        if (confirm('¿Borrar este registro?')) {
-          // Eliminar de Google Sheets
-          if (regElim && typeof borrarDeSheets === "function") {
-            try { await borrarDeSheets(regElim); } catch {}
-          }
-          // Eliminar localmente
-          registros.splice(index, 1);
-          guardarRegistros(registros);
-          renderTablaRegistros();
-        }
-      }
-    }
-  });
-
-  // --- Lógica de formulario con agregados y orientación de precios ---
-  const miForm = document.getElementById('miForm');
-  const infoPrecio = document.getElementById('info-precio');
-  let registroPendiente = null;
-
-  function mostrarInfoPrecio(nuevoRegistro, registrosHistoricos) {
-    const { precioPor, unidadEstandar } = calcularPrecioPorUnidad(
-      nuevoRegistro.precio,
-      nuevoRegistro.cantidad,
-      nuevoRegistro.unidad,
-      nuevoRegistro.unidades
-    );
-
-    if (!precioPor || !isFinite(precioPor)) {
-      infoPrecio.textContent = '';
-      return;
-    }
-
-    const comparables = registrosHistoricos
-      .map(r => {
-        const std = calcularPrecioEstandarDeRegistro(r);
-        return { ...r, precioStd: std.precioPor, unidadStd: std.unidadEstandar };
-      })
-      .filter(r =>
-        r.producto &&
-        r.marca &&
-        r.precioStd &&
-        r.producto.toLowerCase() === nuevoRegistro.producto.toLowerCase() &&
-        r.marca.toLowerCase() === nuevoRegistro.marca.toLowerCase() &&
-        r.unidadStd === unidadEstandar
-      );
-
-    if (!comparables.length) {
-      infoPrecio.innerHTML =
-        `Es la primera vez que registras <strong>${nuevoRegistro.producto}</strong> (${nuevoRegistro.marca}). ` +
-        `Precio actual: <strong>${formatoCLP(Math.round(precioPor))} por 1 ${unidadEstandar}</strong>.`;
-      return;
-    }
-
-    const precios = comparables.map(r => r.precioStd);
-    const min = Math.min(...precios);
-    const max = Math.max(...precios);
-    const avg = precios.reduce((a, b) => a + b, 0) / precios.length;
-    const diffPct = ((precioPor - avg) / avg) * 100;
-    const masBarato = precioPor <= avg;
-    const tendencia = masBarato ? 'más barato' : 'más caro';
-    const color = masBarato ? '#2e7d32' : '#c62828';
-
-    infoPrecio.innerHTML = `
-      Precio actual: <strong>${formatoCLP(Math.round(precioPor))} / 1 ${unidadEstandar}</strong>.<br>
-      Historial para <strong>${nuevoRegistro.producto}</strong> (${nuevoRegistro.marca}) ` +
-      `en la misma unidad estándar (${comparables.length} registro(s)) – ` +
-      `mínimo: <strong>${formatoCLP(Math.round(min))}</strong>, ` +
-      `máximo: <strong>${formatoCLP(Math.round(max))}</strong>, ` +
-      `promedio: <strong>${formatoCLP(Math.round(avg))}</strong>.<br>
-      <span style="color:${color};font-weight:600;">
-        Este precio está ${Math.abs(diffPct).toFixed(1)}% ${tendencia} que el promedio histórico.
-      </span>
-    `;
-  }
-
-  miForm.addEventListener('submit', async function (ev) {
-    ev.preventDefault();
-    const producto = miForm.producto.value.trim();
-    const marca = miForm.marca.value.trim();
-    const precio = parseInt(miForm.precio.value, 10);
-    const cantidad = parseFloat(miForm.cantidad.value.replace(",", "."));
-    const unidad = miForm.unidad.value;
-    const unidades = parseInt(miForm.unidades.value, 10);
-
-    if (!producto || !marca || isNaN(precio) || isNaN(cantidad) || isNaN(unidades) || unidades <= 0) {
-      alert('Complete todos los campos correctamente.');
-      return;
-    }
-
-    const fecha = new Date().toISOString();
-
-    const nuevoRegistro = {
-      id: 'id-' + Date.now() + '-' + Math.random().toString(36).substr(2,6),
-      fecha,
-      producto,
-      marca,
-      precio,
-      cantidad,
-      unidad,
-      unidades
+    const nuevo = {
+      id: 'id-' + Date.now(),
+      fecha: formatearFecha(new Date()),
+      action: 'add',
+      producto: e.target.producto.value,
+      marca: e.target.marca.value,
+      precio: parseFloat(e.target.precio.value),
+      cantidad: parseFloat(e.target.cantidad.value),
+      unidad: e.target.unidad.value,
+      unidades: parseInt(e.target.unidades.value)
     };
 
-    // Guardamos referencia de los registros previos para comparar precios
-    const registrosPrevios = obtenerRegistros();
-
-    // Mostrar orientación de precio respecto al historial ANTES de guardar
-    mostrarInfoPrecio(nuevoRegistro, registrosPrevios);
-
-    // Crear estado de registro pendiente y botones de acción
-    registroPendiente = { nuevoRegistro, registrosPrevios };
-
-    // Añadimos botones de Confirmar / Descartar bajo el mensaje
-    const accionesHtml = `
-      <div id="acciones-precio" style="margin-top:0.6rem;display:flex;flex-wrap:wrap;gap:0.5rem;">
-        <button type="button" id="btn-confirmar-registro"
-          style="padding:0.4rem 0.9rem;border-radius:999px;border:none;background:#1e88e5;color:white;font-size:0.85rem;cursor:pointer;box-shadow:0 2px 6px rgba(25,118,210,0.4);">
-          Confirmar registro
-        </button>
-        <button type="button" id="btn-cancelar-registro"
-          style="padding:0.4rem 0.9rem;border-radius:999px;border:1px solid #cfd8dc;background:white;color:#455a64;font-size:0.85rem;cursor:pointer;">
-          Cancelar
-        </button>
-      </div>
-    `;
-    infoPrecio.insertAdjacentHTML('beforeend', accionesHtml);
-
-    const btnConfirmar = document.getElementById('btn-confirmar-registro');
-    const btnCancelar = document.getElementById('btn-cancelar-registro');
-
-    if (btnConfirmar) {
-      btnConfirmar.onclick = async () => {
-        if (!registroPendiente) return;
-        btnConfirmar.disabled = true;
-        btnCancelar.disabled = true;
-
-        const { nuevoRegistro: reg, registrosPrevios: prev } = registroPendiente;
-
-        // Intenta guardar en Google Sheets (online)
-        try {
-          await guardarEnSheets({
-            id: reg.id,
-            fecha: reg.fecha,
-            producto: reg.producto,
-            marca: reg.marca,
-            precio: reg.precio,
-            cantidad: reg.cantidad,
-            unidad: reg.unidad,
-            unidades: reg.unidades
-          });
-        } catch (e) {
-          console.warn('No se pudo enviar online. Guardando offline.');
-        }
-
-        // Guardar en localStorage (respaldo offline siempre)
-        const registros = [reg, ...prev]; // más reciente primero
-        guardarRegistros(registros);
-
-        registroPendiente = null;
-
-        infoPrecio.textContent = '';
-        renderTablaRegistros();
-        miForm.reset();
-        miForm.producto.focus();
-      };
-    }
-
-    if (btnCancelar) {
-      btnCancelar.onclick = () => {
-        registroPendiente = null;
-        infoPrecio.textContent = '';
-        miForm.reset();
-        miForm.producto.focus();
-      };
-    }
-  }, true);
-
-  // -- Inicializaciones principales --
-  renderTablaRegistros();
-
-  // Sincronización inicial: Google Sheets es la fuente principal (visible en cualquier dispositivo)
-  async function sincronizarInicial() {
-    const msg = document.getElementById('mensaje-sync');
-    if (msg) msg.style.display = 'none';
     try {
-      const remotos = await listarDesdeSheets();
-      if (Array.isArray(remotos)) {
-        guardarRegistros(remotos);
-        renderTablaRegistros();
-      }
-    } catch (e) {
-      console.warn('No se pudo cargar desde Google Sheets. Usando datos locales.', e);
-      if (msg) {
-        msg.textContent = 'No se pudo conectar con Google Sheets. Mostrando datos locales. ';
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = 'Reintentar';
-        btn.style.cssText = 'margin-left:0.5rem;padding:0.3rem 0.6rem;background:#1e88e5;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;min-height:36px;';
-        btn.onclick = sincronizarInicial;
-        msg.appendChild(btn);
-        msg.style.display = 'block';
-      }
-      renderTablaRegistros();
+      // 1. Enviar a Sheets
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        body: JSON.stringify(nuevo)
+      });
+      // 2. Agregar a la memoria local temporal y actualizar pantalla
+      registrosEnMemoria.push(nuevo);
+      renderTabla();
+      e.target.reset();
+      document.getElementById('info-precio').innerHTML = '<span style="color:green">¡Guardado en la nube con éxito!</span>';
+    } catch (error) {
+      alert('Error al guardar en la nube.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar en la Nube';
+      setTimeout(() => document.getElementById('info-precio').innerHTML = '', 4000);
     }
-  }
-  sincronizarInicial();
+  });
+
+  // Borrar registro
+  document.querySelector('#tabla-registros').addEventListener('click', async (e) => {
+    if (e.target.classList.contains('delete-btn')) {
+      if (!confirm('¿Seguro que deseas borrar este registro de la nube?')) return;
+      
+      const idBorrar = e.target.getAttribute('data-id');
+      const btn = e.target;
+      btn.textContent = '...';
+      
+      try {
+        await fetch(SHEETS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'delete', id: idBorrar })
+        });
+        // Filtrar de la memoria y re-renderizar
+        registrosEnMemoria = registrosEnMemoria.filter(r => r.id !== idBorrar);
+        renderTabla();
+      } catch (err) {
+        alert('Error al intentar borrar.');
+        btn.textContent = 'Borrar';
+      }
+    }
+  });
+
+  // Al abrir la app, cargar los datos de la nube
+  cargarDesdeNube();
   </script>
 </body>
 </html>
