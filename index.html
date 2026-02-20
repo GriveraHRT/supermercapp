@@ -25,7 +25,6 @@
     .btn-verde { background: var(--success); color: white; width: 100%; margin-bottom: 10px; }
     .btn-rojo { background: var(--danger); color: white; width: 100%; }
 
-    /* Caja de decisión interna */
     .estadisticas-box { background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 15px 0; border-left: 5px solid var(--primary); }
     .estadisticas-box ul { margin: 10px 0 0 0; padding-left: 20px; color: #455a64; line-height: 1.6; }
 
@@ -43,6 +42,11 @@
     table { border-collapse: collapse; width: 100%; font-size: 0.95rem; min-width: 700px; }
     th, td { border-bottom: 1px solid #e3e7ec; padding: 12px; text-align: left; }
     th { background: #f5f7fb; font-weight: 600; color: #455a64; white-space: nowrap; }
+    
+    /* Estilos para encabezados ordenables */
+    .col-ordenable { cursor: pointer; user-select: none; transition: background 0.2s; }
+    .col-ordenable:hover { background: #e3f2fd; color: #1e88e5; }
+    
     .delete-btn { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; box-shadow: none; }
     #estado-sync { text-align: center; padding: 10px; font-weight: bold; color: #1e88e5; }
   </style>
@@ -58,10 +62,19 @@
   <div id="tab-formulario" class="tab-content active">
     
     <form id="miForm">
-      <label>Producto: <input required name="producto" autocomplete="off" placeholder="Ej: Yogurt Protein+" /></label>
-      <label>Marca: <input required name="marca" autocomplete="off" placeholder="Ej: Soprole" /></label>
+      <label>Producto: 
+        <input required name="producto" list="lista-productos" autocomplete="off" placeholder="Ej: Yogurt Protein+" />
+      </label>
+      <label>Marca: 
+        <input required name="marca" list="lista-marcas" autocomplete="off" placeholder="Ej: Soprole" />
+      </label>
+      
+      <datalist id="lista-productos"></datalist>
+      <datalist id="lista-marcas"></datalist>
+
       <label>Precio Total ($): <input required name="precio" type="number" min="0" step="any" placeholder="Ej: 1500" /></label>
-      <label>Cantidad (Ej: 1, 500, 1.5):
+      
+      <label>Cantidad:
         <div style="display: flex; gap: 5px;">
           <input required name="cantidad" type="number" min="0" step="0.01" value="1" style="flex: 2; margin:0;" />
           <select name="unidad" style="flex: 1; margin:0;">
@@ -96,8 +109,15 @@
       <table id="tabla-registros">
         <thead>
           <tr>
-            <th>Fecha y Hora</th><th>Producto</th><th>Marca</th><th>Precio Total</th>
-            <th>Precio Unitario</th><th>Cant.</th><th>Unid.</th><th>Llevas</th><th>Acción</th>
+            <th>Fecha y Hora</th>
+            <th>Producto</th>
+            <th>Marca</th>
+            <th class="col-ordenable" onclick="ordenarTabla('precio')">Precio Total <span id="icono-precio">↕️</span></th>
+            <th class="col-ordenable" onclick="ordenarTabla('unitario')">Precio Unitario <span id="icono-unitario">↕️</span></th>
+            <th>Cant.</th>
+            <th>Unid.</th>
+            <th>Llevas</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -110,7 +130,11 @@
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNQlCKSUWa5HHOvSpJt-kj_um8oifkV6ZA7qXJ9LGscqW2n5Z4ZyVXZpdFUUt5_NFz/exec';
 
   let registrosEnMemoria = [];
-  let registroPendiente = null; // Guardará temporalmente los datos antes de confirmar
+  let registroPendiente = null; 
+  
+  // Variables para controlar el orden de la tabla
+  let columnaOrden = null; 
+  let ordenAscendente = true;
 
   // Cambio de pestañas
   document.querySelectorAll('.tab').forEach(tab => {
@@ -120,6 +144,26 @@
       document.getElementById('tab-' + this.getAttribute('data-tab')).classList.add('active');
     });
   });
+
+  // NORMALIZADOR DE TEXTO (Convierte todo a Formato Título, ej: "SOPROLE" -> "Soprole")
+  function normalizarTexto(texto) {
+    if (!texto) return '';
+    return texto.trim().toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+  // ACTUALIZAR AUTOCOMPLETADO (Llena los datalists)
+  function actualizarSugerencias() {
+    const setProductos = new Set();
+    const setMarcas = new Set();
+    
+    registrosEnMemoria.forEach(r => {
+      if (r.producto) setProductos.add(normalizarTexto(r.producto));
+      if (r.marca) setMarcas.add(normalizarTexto(r.marca));
+    });
+
+    document.getElementById('lista-productos').innerHTML = [...setProductos].map(p => `<option value="${p}">`).join('');
+    document.getElementById('lista-marcas').innerHTML = [...setMarcas].map(m => `<option value="${m}">`).join('');
+  }
 
   function formatearFechaLocal(fechaData) {
     if (!fechaData) return '';
@@ -144,24 +188,47 @@
     return { precioPor: cantStd > 0 ? (precio * unidades) / cantStd : 0, unidadStd: uniStd };
   }
 
-  // --- LÓGICA DEL BOTÓN "ANALIZAR PRECIO" (ANTES DE GUARDAR) ---
+  // LÓGICA DE ORDENAMIENTO (Al hacer clic en el encabezado)
+  function ordenarTabla(columna) {
+    if (columnaOrden === columna) {
+      ordenAscendente = !ordenAscendente; // Invertir orden si es la misma columna
+    } else {
+      columnaOrden = columna;
+      ordenAscendente = true; // Por defecto de menor a mayor al cambiar
+    }
+
+    // Resetear íconos
+    document.getElementById('icono-precio').textContent = '↕️';
+    document.getElementById('icono-unitario').textContent = '↕️';
+    
+    // Poner ícono activo
+    const icono = ordenAscendente ? '🔼' : '🔽';
+    document.getElementById(`icono-${columna}`).textContent = icono;
+
+    // Volver a dibujar tabla (respetando si hay filtro escrito)
+    renderTabla(document.getElementById('buscador').value.toLowerCase());
+  }
+
+  // --- BOTÓN "ANALIZAR PRECIO" ---
   document.getElementById('miForm').addEventListener('submit', (e) => {
     e.preventDefault();
     
-    // 1. Recopilar datos del formulario
+    // Aplicamos normalizador a producto y marca (SOPROLE = Soprole)
+    const prodLimpio = normalizarTexto(e.target.producto.value);
+    const marcaLimpia = normalizarTexto(e.target.marca.value);
+
     registroPendiente = {
       id: 'id-' + Date.now(),
       fecha: new Date().toISOString(),
       action: 'add',
-      producto: e.target.producto.value.trim(),
-      marca: e.target.marca.value.trim(),
+      producto: prodLimpio,
+      marca: marcaLimpia,
       precio: parseFloat(e.target.precio.value),
       cantidad: parseFloat(e.target.cantidad.value),
       unidad: e.target.unidad.value,
       unidades: parseInt(e.target.unidades.value)
     };
 
-    // 2. Calcular precio estandarizado actual
     const stdActual = calcularPrecioEstandar(
       registroPendiente.precio, 
       registroPendiente.cantidad, 
@@ -169,15 +236,14 @@
       registroPendiente.unidades
     );
 
-    // 3. Buscar historial del producto en la memoria (ignorando mayúsculas)
+    // Búsqueda histórica (Exacta y limpia gracias al normalizador)
     const historial = registrosEnMemoria.filter(r => 
-      r.producto.toLowerCase() === registroPendiente.producto.toLowerCase()
+      normalizarTexto(r.producto) === prodLimpio && normalizarTexto(r.marca) === marcaLimpia
     );
 
     let htmlAnalisis = '';
 
     if (historial.length > 0) {
-      // Extraer solo los precios estandarizados históricos
       const preciosHistoricos = historial.map(r => 
         calcularPrecioEstandar(r.precio, r.cantidad, r.unidad, r.unidades || 1).precioPor
       ).filter(p => p > 0);
@@ -185,8 +251,6 @@
       const min = Math.min(...preciosHistoricos);
       const max = Math.max(...preciosHistoricos);
       const promedio = preciosHistoricos.reduce((a, b) => a + b, 0) / preciosHistoricos.length;
-
-      // Calcular diferencia porcentual con el promedio
       const diferencia = ((stdActual.precioPor - promedio) / promedio) * 100;
       
       let mensajeColor = diferencia > 0 ? 'var(--danger)' : 'var(--success)';
@@ -197,11 +261,10 @@
       htmlAnalisis = `
         <p style="font-size: 1.1rem; margin-bottom: 5px;">Llevando: <strong>${registroPendiente.producto} (${registroPendiente.marca})</strong></p>
         <p style="font-size: 1.1rem;">Precio HOY: <strong style="font-size:1.3rem;">${formatoCLP(stdActual.precioPor)} / 1 ${stdActual.unidadStd}</strong></p>
-        
         <div class="estadisticas-box" style="border-left-color: ${mensajeColor};">
           <p style="margin-top:0; font-size:1.1rem; color:${mensajeColor};">${mensajeTexto}</p>
           <hr style="border: 0; border-top: 1px solid #ccc; margin: 10px 0;">
-          <strong>Tu Historial:</strong>
+          <strong>Tu Historial de esta marca:</strong>
           <ul>
             <li>✅ Mínimo pagado: <strong>${formatoCLP(min)}</strong></li>
             <li>⚠️ Máximo pagado: <strong>${formatoCLP(max)}</strong></li>
@@ -214,26 +277,23 @@
         <p style="font-size: 1.1rem; margin-bottom: 5px;">Llevando: <strong>${registroPendiente.producto} (${registroPendiente.marca})</strong></p>
         <p style="font-size: 1.1rem;">Precio HOY: <strong style="font-size:1.3rem;">${formatoCLP(stdActual.precioPor)} / 1 ${stdActual.unidadStd}</strong></p>
         <div class="estadisticas-box">
-          <p style="margin:0; font-size:1.1rem; color:#1e88e5;">🟢 Primer registro de este producto. No hay histórico para comparar.</p>
+          <p style="margin:0; font-size:1.1rem; color:#1e88e5;">🟢 Primer registro de este producto y marca. No hay histórico para comparar.</p>
         </div>
       `;
     }
 
-    // 4. Mostrar panel de decisión y ocultar formulario
     document.getElementById('contenido-decision').innerHTML = htmlAnalisis;
     document.getElementById('miForm').style.display = 'none';
     document.getElementById('caja-decision').style.display = 'block';
   });
 
-  // --- LÓGICA: BOTÓN CANCELAR ---
   document.getElementById('btn-cancelar').addEventListener('click', () => {
     registroPendiente = null;
     document.getElementById('caja-decision').style.display = 'none';
-    document.getElementById('miForm').style.display = 'flex'; // Volver a mostrar form
+    document.getElementById('miForm').style.display = 'flex';
     document.getElementById('miForm').reset();
   });
 
-  // --- LÓGICA: BOTÓN CONFIRMAR Y GUARDAR ---
   document.getElementById('btn-confirmar').addEventListener('click', async () => {
     const btnConfirmar = document.getElementById('btn-confirmar');
     btnConfirmar.disabled = true;
@@ -242,13 +302,14 @@
     try {
       await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify(registroPendiente) });
       registrosEnMemoria.push(registroPendiente);
+      
+      // Actualizar la lista de sugerencias con este nuevo dato
+      actualizarSugerencias();
       renderTabla(document.getElementById('buscador').value.toLowerCase());
       
-      // Restaurar UI
       document.getElementById('caja-decision').style.display = 'none';
       document.getElementById('miForm').style.display = 'flex';
       document.getElementById('miForm').reset();
-      
       document.getElementById('info-precio').innerHTML = '<span style="color:green">¡Compra registrada con éxito! ✅</span>';
     } catch (error) {
       document.getElementById('info-precio').innerHTML = '<span style="color:red">Error al guardar ❌</span>';
@@ -260,7 +321,6 @@
     }
   });
 
-  // --- RESTO DEL CÓDIGO (Cargar y Renderizar) ---
   async function cargarDesdeNube() {
     const estado = document.getElementById('estado-sync');
     estado.textContent = 'Actualizando desde la nube... ⏳';
@@ -269,6 +329,9 @@
       const data = await resp.json();
       registrosEnMemoria = Array.isArray(data) ? data : [];
       estado.textContent = '';
+      
+      // Cargar sugerencias al iniciar
+      actualizarSugerencias();
       renderTabla();
     } catch (e) {
       estado.textContent = '❌ Error de conexión.';
@@ -282,7 +345,9 @@
   function renderTabla(filtro = '') {
     const tbody = document.querySelector('#tabla-registros tbody');
     tbody.innerHTML = '';
-    let registrosMostrar = [...registrosEnMemoria].reverse();
+    
+    // 1. Filtrar (y clonar arreglo para no afectar original)
+    let registrosMostrar = [...registrosEnMemoria];
 
     if (filtro) {
       registrosMostrar = registrosMostrar.filter(reg => 
@@ -292,6 +357,28 @@
       );
     }
 
+    // 2. Ordenar si se seleccionó una columna
+    if (columnaOrden) {
+      registrosMostrar.sort((a, b) => {
+        let valA, valB;
+        if (columnaOrden === 'precio') {
+          valA = a.precio;
+          valB = b.precio;
+        } else if (columnaOrden === 'unitario') {
+          valA = calcularPrecioEstandar(a.precio, a.cantidad, a.unidad, a.unidades).precioPor;
+          valB = calcularPrecioEstandar(b.precio, b.cantidad, b.unidad, b.unidades).precioPor;
+        }
+
+        if (valA < valB) return ordenAscendente ? -1 : 1;
+        if (valA > valB) return ordenAscendente ? 1 : -1;
+        return 0;
+      });
+    } else {
+      // Orden por defecto: los más recientes primero (invertir)
+      registrosMostrar.reverse();
+    }
+
+    // 3. Pintar en pantalla
     registrosMostrar.forEach(reg => {
       const std = calcularPrecioEstandar(reg.precio, reg.cantidad, reg.unidad, reg.unidades || 1);
       const textoStd = std.precioPor ? `${formatoCLP(std.precioPor)} / 1 ${std.unidadStd}` : '-';
@@ -319,6 +406,7 @@
       try {
         await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: idBorrar }) });
         registrosEnMemoria = registrosEnMemoria.filter(r => r.id !== idBorrar);
+        actualizarSugerencias(); // Actualizar las listas desplegables al borrar
         renderTabla(document.getElementById('buscador').value.toLowerCase());
       } catch (err) {
         alert('Error al borrar.');
