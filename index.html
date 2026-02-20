@@ -7,37 +7,44 @@
   <style>
     :root {
       --primary: #1e88e5; --secondary: #eceff1; --accent: #fbc02d;
-      --card-bg: #ffffff; --danger: #f44336; --text-main: #263238; --gray: #90a4ae;
+      --card-bg: #ffffff; --danger: #f44336; --success: #4caf50; --text-main: #263238; --gray: #90a4ae;
     }
     body { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; color: var(--text-main); background: radial-gradient(circle at top, #e3f2fd 0, #eceff1 45%, #cfd8dc 100%); }
     header { text-align: center; padding: 1.8rem 0 0.8rem 0; font-size: 1.7rem; font-weight: 700; color: var(--primary); }
     
-    /* Formulario */
-    form { background: var(--card-bg); max-width: 520px; margin: 0.5rem auto 1.2rem auto; padding: 1.4rem; border-radius: 1.1rem; box-shadow: 0 18px 45px rgba(15, 76, 129, 0.16); display: flex; flex-direction: column; gap: 0.75rem; }
+    /* Formulario y Caja de Decisión */
+    form, #caja-decision { background: var(--card-bg); max-width: 520px; margin: 0.5rem auto 1.2rem auto; padding: 1.4rem; border-radius: 1.1rem; box-shadow: 0 18px 45px rgba(15, 76, 129, 0.16); }
+    form { display: flex; flex-direction: column; gap: 0.75rem; }
     label { display: block; font-size: 0.96rem; color: var(--gray); margin-bottom: 0.18em; }
     input, select { width: 100%; padding: 0.52em 0.95em; background: #f5f7fa; border: 1px solid #cfd8dc; border-radius: .55em; font-size: 1.02rem; margin-bottom: 0.2rem; outline: none; box-sizing: border-box; }
     input:focus, select:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 3px rgba(30,136,229,0.16); }
-    button[type=submit] { margin-top: .7rem; padding: 0.9em 0; background: linear-gradient(135deg, #1e88e5, #1976d2); color: #fff; font-size: 1.07rem; font-weight: bold; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 16px rgba(25,118,210,0.35); }
     
+    button { padding: 0.9em 0; font-size: 1.07rem; font-weight: bold; border: none; border-radius: 999px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: transform 0.1s; }
+    button:active { transform: scale(0.98); }
+    .btn-principal { background: linear-gradient(135deg, #1e88e5, #1976d2); color: #fff; margin-top: .7rem; }
+    .btn-verde { background: var(--success); color: white; width: 100%; margin-bottom: 10px; }
+    .btn-rojo { background: var(--danger); color: white; width: 100%; }
+
+    /* Caja de decisión interna */
+    .estadisticas-box { background: #f8f9fa; border-radius: 8px; padding: 15px; margin: 15px 0; border-left: 5px solid var(--primary); }
+    .estadisticas-box ul { margin: 10px 0 0 0; padding-left: 20px; color: #455a64; line-height: 1.6; }
+
     /* Pestañas */
     .tabs { display: flex; border-bottom: 2px solid #ccc; margin-bottom: 1em; max-width: 960px; margin: 0 auto 1em auto;}
-    .tab { padding: 0.5em 1.5em; cursor: pointer; background: #f5f5f5; border: none; font-weight: bold; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; }
+    .tab { padding: 0.5em 1.5em; cursor: pointer; background: #f5f5f5; border: none; font-weight: bold; border-top-left-radius: 6px; border-top-right-radius: 6px; margin-right: 2px; border-radius: 6px 6px 0 0; box-shadow: none; }
     .tab.active { background: #fff; border-bottom: 2px solid #fff; color: #2196F3; }
     .tab-content { display: none; max-width: 960px; margin: 0 auto; padding: 0 10px; }
     .tab-content.active { display: block; }
     
-    /* Buscador */
+    /* Buscador y Tabla */
     .buscador-container { margin-bottom: 1rem; }
     .buscador-input { width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid #cfd8dc; font-size: 1rem; box-sizing: border-box; background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%2390a4ae" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 10px center; padding-left: 35px; }
-    
-    /* Tabla (Ahora con Scroll Horizontal en celulares) */
     .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; background: var(--card-bg); border-radius: 0.8rem; box-shadow: 0 14px 30px rgba(15, 76, 129, 0.18); }
-    table { border-collapse: collapse; width: 100%; font-size: 0.95rem; min-width: 700px; /* Asegura que la tabla no se aplaste en móvil */ }
+    table { border-collapse: collapse; width: 100%; font-size: 0.95rem; min-width: 700px; }
     th, td { border-bottom: 1px solid #e3e7ec; padding: 12px; text-align: left; }
     th { background: #f5f7fb; font-weight: 600; color: #455a64; white-space: nowrap; }
-    .delete-btn { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; }
+    .delete-btn { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; box-shadow: none; }
     #estado-sync { text-align: center; padding: 10px; font-weight: bold; color: #1e88e5; }
-    
   </style>
 </head>
 <body>
@@ -49,6 +56,7 @@
   </div>
 
   <div id="tab-formulario" class="tab-content active">
+    
     <form id="miForm">
       <label>Producto: <input required name="producto" autocomplete="off" placeholder="Ej: Yogurt Protein+" /></label>
       <label>Marca: <input required name="marca" autocomplete="off" placeholder="Ej: Soprole" /></label>
@@ -64,9 +72,19 @@
         </div>
       </label>
       <label>¿Cuántos llevas? (Packs/Unidades): <input required name="unidades" type="number" min="1" step="1" value="1" /></label>
-      <button type="submit">Guardar Precio</button>
+      <button type="submit" class="btn-principal">Analizar Precio</button>
     </form>
-    <div id="info-precio" style="margin-top:0.8rem;text-align:center;font-size:0.9rem;font-weight:bold;"></div>
+
+    <div id="caja-decision" style="display: none;">
+      <h2 style="margin-top:0; color: var(--primary); font-size: 1.4rem;">📊 Análisis de Compra</h2>
+      <div id="contenido-decision"></div>
+      <div style="margin-top: 20px;">
+        <button id="btn-confirmar" class="btn-verde">✅ Sí, lo llevo (Guardar)</button>
+        <button id="btn-cancelar" class="btn-rojo">❌ Está muy caro (Cancelar)</button>
+      </div>
+    </div>
+
+    <div id="info-precio" style="margin-top:0.8rem;text-align:center;font-size:1rem;font-weight:bold;"></div>
   </div>
 
   <div id="tab-registro" class="tab-content">
@@ -92,6 +110,7 @@
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNQlCKSUWa5HHOvSpJt-kj_um8oifkV6ZA7qXJ9LGscqW2n5Z4ZyVXZpdFUUt5_NFz/exec';
 
   let registrosEnMemoria = [];
+  let registroPendiente = null; // Guardará temporalmente los datos antes de confirmar
 
   // Cambio de pestañas
   document.querySelectorAll('.tab').forEach(tab => {
@@ -102,36 +121,146 @@
     });
   });
 
-  // --- SOLUCIÓN PROBLEMA DE LA HORA ---
-  // Esta función lee cualquier fecha (incluso las raras de Google) y las fuerza a mostrarse en tu hora local
   function formatearFechaLocal(fechaData) {
     if (!fechaData) return '';
     const f = new Date(fechaData);
-    if (isNaN(f.getTime())) return fechaData; // Si falla, devuelve el texto original
-    
+    if (isNaN(f.getTime())) return fechaData;
     const dia = String(f.getDate()).padStart(2, '0');
     const mes = String(f.getMonth() + 1).padStart(2, '0');
-    const anio = f.getFullYear();
     const hora = String(f.getHours()).padStart(2, '0');
     const min = String(f.getMinutes()).padStart(2, '0');
-    
-    return `${dia}/${mes}/${anio} ${hora}:${min}`;
+    return `${dia}/${mes}/${f.getFullYear()} ${hora}:${min}`;
   }
 
   function formatoCLP(valor) {
-    return '$ ' + Number(valor || 0).toLocaleString('es-CL');
+    return '$ ' + Math.round(Number(valor || 0)).toLocaleString('es-CL');
   }
 
   function calcularPrecioEstandar(precio, cantidad, unidad, unidades) {
     const cantTotal = cantidad * unidades;
-    let cantStd = cantTotal;
-    let uniStd = unidad;
+    let cantStd = cantTotal, uniStd = unidad;
     if (unidad === 'g') { cantStd = cantTotal / 1000; uniStd = 'kg'; }
     if (unidad === 'ml') { cantStd = cantTotal / 1000; uniStd = 'l'; }
     return { precioPor: cantStd > 0 ? (precio * unidades) / cantStd : 0, unidadStd: uniStd };
   }
 
-  // Cargar datos
+  // --- LÓGICA DEL BOTÓN "ANALIZAR PRECIO" (ANTES DE GUARDAR) ---
+  document.getElementById('miForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // 1. Recopilar datos del formulario
+    registroPendiente = {
+      id: 'id-' + Date.now(),
+      fecha: new Date().toISOString(),
+      action: 'add',
+      producto: e.target.producto.value.trim(),
+      marca: e.target.marca.value.trim(),
+      precio: parseFloat(e.target.precio.value),
+      cantidad: parseFloat(e.target.cantidad.value),
+      unidad: e.target.unidad.value,
+      unidades: parseInt(e.target.unidades.value)
+    };
+
+    // 2. Calcular precio estandarizado actual
+    const stdActual = calcularPrecioEstandar(
+      registroPendiente.precio, 
+      registroPendiente.cantidad, 
+      registroPendiente.unidad, 
+      registroPendiente.unidades
+    );
+
+    // 3. Buscar historial del producto en la memoria (ignorando mayúsculas)
+    const historial = registrosEnMemoria.filter(r => 
+      r.producto.toLowerCase() === registroPendiente.producto.toLowerCase()
+    );
+
+    let htmlAnalisis = '';
+
+    if (historial.length > 0) {
+      // Extraer solo los precios estandarizados históricos
+      const preciosHistoricos = historial.map(r => 
+        calcularPrecioEstandar(r.precio, r.cantidad, r.unidad, r.unidades || 1).precioPor
+      ).filter(p => p > 0);
+
+      const min = Math.min(...preciosHistoricos);
+      const max = Math.max(...preciosHistoricos);
+      const promedio = preciosHistoricos.reduce((a, b) => a + b, 0) / preciosHistoricos.length;
+
+      // Calcular diferencia porcentual con el promedio
+      const diferencia = ((stdActual.precioPor - promedio) / promedio) * 100;
+      
+      let mensajeColor = diferencia > 0 ? 'var(--danger)' : 'var(--success)';
+      let mensajeTexto = diferencia > 0 
+        ? `🔴 <strong>${Math.abs(diferencia).toFixed(1)}% MÁS CARO</strong> que tu promedio.` 
+        : `🟢 <strong>${Math.abs(diferencia).toFixed(1)}% MÁS BARATO</strong> que tu promedio.`;
+
+      htmlAnalisis = `
+        <p style="font-size: 1.1rem; margin-bottom: 5px;">Llevando: <strong>${registroPendiente.producto} (${registroPendiente.marca})</strong></p>
+        <p style="font-size: 1.1rem;">Precio HOY: <strong style="font-size:1.3rem;">${formatoCLP(stdActual.precioPor)} / 1 ${stdActual.unidadStd}</strong></p>
+        
+        <div class="estadisticas-box" style="border-left-color: ${mensajeColor};">
+          <p style="margin-top:0; font-size:1.1rem; color:${mensajeColor};">${mensajeTexto}</p>
+          <hr style="border: 0; border-top: 1px solid #ccc; margin: 10px 0;">
+          <strong>Tu Historial:</strong>
+          <ul>
+            <li>✅ Mínimo pagado: <strong>${formatoCLP(min)}</strong></li>
+            <li>⚠️ Máximo pagado: <strong>${formatoCLP(max)}</strong></li>
+            <li>📊 Promedio: <strong>${formatoCLP(promedio)}</strong></li>
+          </ul>
+        </div>
+      `;
+    } else {
+      htmlAnalisis = `
+        <p style="font-size: 1.1rem; margin-bottom: 5px;">Llevando: <strong>${registroPendiente.producto} (${registroPendiente.marca})</strong></p>
+        <p style="font-size: 1.1rem;">Precio HOY: <strong style="font-size:1.3rem;">${formatoCLP(stdActual.precioPor)} / 1 ${stdActual.unidadStd}</strong></p>
+        <div class="estadisticas-box">
+          <p style="margin:0; font-size:1.1rem; color:#1e88e5;">🟢 Primer registro de este producto. No hay histórico para comparar.</p>
+        </div>
+      `;
+    }
+
+    // 4. Mostrar panel de decisión y ocultar formulario
+    document.getElementById('contenido-decision').innerHTML = htmlAnalisis;
+    document.getElementById('miForm').style.display = 'none';
+    document.getElementById('caja-decision').style.display = 'block';
+  });
+
+  // --- LÓGICA: BOTÓN CANCELAR ---
+  document.getElementById('btn-cancelar').addEventListener('click', () => {
+    registroPendiente = null;
+    document.getElementById('caja-decision').style.display = 'none';
+    document.getElementById('miForm').style.display = 'flex'; // Volver a mostrar form
+    document.getElementById('miForm').reset();
+  });
+
+  // --- LÓGICA: BOTÓN CONFIRMAR Y GUARDAR ---
+  document.getElementById('btn-confirmar').addEventListener('click', async () => {
+    const btnConfirmar = document.getElementById('btn-confirmar');
+    btnConfirmar.disabled = true;
+    btnConfirmar.textContent = 'Guardando en la Nube... ⏳';
+
+    try {
+      await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify(registroPendiente) });
+      registrosEnMemoria.push(registroPendiente);
+      renderTabla(document.getElementById('buscador').value.toLowerCase());
+      
+      // Restaurar UI
+      document.getElementById('caja-decision').style.display = 'none';
+      document.getElementById('miForm').style.display = 'flex';
+      document.getElementById('miForm').reset();
+      
+      document.getElementById('info-precio').innerHTML = '<span style="color:green">¡Compra registrada con éxito! ✅</span>';
+    } catch (error) {
+      document.getElementById('info-precio').innerHTML = '<span style="color:red">Error al guardar ❌</span>';
+    } finally {
+      btnConfirmar.disabled = false;
+      btnConfirmar.textContent = '✅ Sí, lo llevo (Guardar)';
+      setTimeout(() => document.getElementById('info-precio').innerHTML = '', 4000);
+      registroPendiente = null;
+    }
+  });
+
+  // --- RESTO DEL CÓDIGO (Cargar y Renderizar) ---
   async function cargarDesdeNube() {
     const estado = document.getElementById('estado-sync');
     estado.textContent = 'Actualizando desde la nube... ⏳';
@@ -146,20 +275,15 @@
     }
   }
 
-  // --- SOLUCIÓN DEL FILTRO Y BÚSQUEDA ---
-  // Escuchar lo que escribes en la barra de búsqueda
   document.getElementById('buscador').addEventListener('input', (e) => {
     renderTabla(e.target.value.toLowerCase());
   });
 
-  // Renderizar la tabla (ahora acepta un término de búsqueda)
   function renderTabla(filtro = '') {
     const tbody = document.querySelector('#tabla-registros tbody');
     tbody.innerHTML = '';
-    
     let registrosMostrar = [...registrosEnMemoria].reverse();
 
-    // Si escribiste algo en el buscador, filtramos la lista
     if (filtro) {
       registrosMostrar = registrosMostrar.filter(reg => 
         String(reg.producto).toLowerCase().includes(filtro) ||
@@ -170,12 +294,10 @@
 
     registrosMostrar.forEach(reg => {
       const std = calcularPrecioEstandar(reg.precio, reg.cantidad, reg.unidad, reg.unidades || 1);
-      const textoStd = std.precioPor ? `${formatoCLP(Math.round(std.precioPor))} / 1 ${std.unidadStd}` : '-';
-      const fechaCorrecta = formatearFechaLocal(reg.fecha);
-      
+      const textoStd = std.precioPor ? `${formatoCLP(std.precioPor)} / 1 ${std.unidadStd}` : '-';
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${fechaCorrecta}</td>
+        <td>${formatearFechaLocal(reg.fecha)}</td>
         <td><strong>${reg.producto}</strong></td>
         <td>${reg.marca}</td>
         <td>${formatoCLP(reg.precio)}</td>
@@ -189,44 +311,6 @@
     });
   }
 
-  // Guardar datos
-  document.getElementById('miForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
-
-    // Generamos la fecha exacta del momento de guardar
-    const fechaActual = new Date().toISOString(); 
-
-    const nuevo = {
-      id: 'id-' + Date.now(),
-      fecha: fechaActual,
-      action: 'add',
-      producto: e.target.producto.value,
-      marca: e.target.marca.value,
-      precio: parseFloat(e.target.precio.value),
-      cantidad: parseFloat(e.target.cantidad.value),
-      unidad: e.target.unidad.value,
-      unidades: parseInt(e.target.unidades.value)
-    };
-
-    try {
-      await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify(nuevo) });
-      registrosEnMemoria.push(nuevo);
-      renderTabla(document.getElementById('buscador').value.toLowerCase()); // Mantener el filtro si está activo
-      e.target.reset();
-      document.getElementById('info-precio').innerHTML = '<span style="color:green">¡Guardado con éxito! ✅</span>';
-    } catch (error) {
-      document.getElementById('info-precio').innerHTML = '<span style="color:red">Error al guardar ❌</span>';
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Guardar Precio';
-      setTimeout(() => document.getElementById('info-precio').innerHTML = '', 3000);
-    }
-  });
-
-  // Borrar
   document.querySelector('#tabla-registros').addEventListener('click', async (e) => {
     if (e.target.classList.contains('delete-btn')) {
       if (!confirm('¿Seguro que deseas borrar este registro?')) return;
