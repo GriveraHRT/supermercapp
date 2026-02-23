@@ -64,7 +64,7 @@
 
   <div class="tabs">
     <button class="tab active" data-tab="formulario">Añadir</button>
-    <button class="tab" data-tab="registro">Ver Lista</button>
+    <button class="tab" data-tab="registro">Historial</button>
   </div>
 
   <div id="tab-formulario" class="tab-content active">
@@ -80,9 +80,9 @@
       <datalist id="lista-productos"></datalist>
       <datalist id="lista-marcas"></datalist>
 
-      <label>Precio Total ($): <input required name="precio" type="number" min="0" step="any" placeholder="Ej: 1500" /></label>
+      <label>Precio Unitario ($): <input required name="precio" type="number" min="0" step="any" placeholder="Ej: 1500" /></label>
       
-      <label>Cantidad:
+      <label>Cantidad (Por unidad/pack):
         <div style="display: flex; gap: 5px;">
           <input required name="cantidad" type="number" min="0" step="0.01" value="1" style="flex: 2; margin:0;" />
           <select name="unidad" style="flex: 1; margin:0;">
@@ -112,11 +112,20 @@
     <div class="buscador-container">
       <input type="text" id="buscador" class="buscador-input" placeholder="Filtrar por producto, marca o fecha...">
     </div>
+
+    <div style="background: var(--primary); color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+      <span style="font-size: 1.1rem; font-weight: 600;">🛒 Total en Carrito:</span>
+      <span id="suma-total" style="font-size: 1.5rem; font-weight: bold;">$ 0</span>
+    </div>
+
     <div id="estado-sync">Cargando base de datos...</div>
     <div class="table-container">
       <table id="tabla-registros">
         <thead>
           <tr>
+            <th style="width: 40px; text-align: center;">
+              <input type="checkbox" id="check-all" title="Seleccionar todo lo filtrado" style="transform: scale(1.3); cursor: pointer;">
+            </th>
             <th>Fecha y Hora</th>
             <th>Producto</th>
             <th>Marca</th>
@@ -134,15 +143,16 @@
   </div>
 
   <script>
-  // 🔴 ¡IMPORTANTE! PEGA AQUÍ TU URL DE GOOGLE APPS SCRIPT
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwNQlCKSUWa5HHOvSpJt-kj_um8oifkV6ZA7qXJ9LGscqW2n5Z4ZyVXZpdFUUt5_NFz/exec';
 
   let registrosEnMemoria = [];
   let registroPendiente = null; 
   
-  // Variables para controlar el orden de la tabla
   let columnaOrden = null; 
   let ordenAscendente = true;
+
+  // NUEVO: Memoria para guardar los IDs de los productos que vas marcando
+  let idsSeleccionados = new Set();
 
   // Cambio de pestañas
   document.querySelectorAll('.tab').forEach(tab => {
@@ -153,13 +163,11 @@
     });
   });
 
-  // NORMALIZADOR DE TEXTO (Convierte todo a Formato Título, ej: "SOPROLE" -> "Soprole")
   function normalizarTexto(texto) {
     if (!texto) return '';
     return texto.trim().toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
   }
 
-  // ACTUALIZAR AUTOCOMPLETADO (Llena los datalists)
   function actualizarSugerencias() {
     const setProductos = new Set();
     const setMarcas = new Set();
@@ -196,32 +204,76 @@
     return { precioPor: cantStd > 0 ? (precio * unidades) / cantStd : 0, unidadStd: uniStd };
   }
 
-  // LÓGICA DE ORDENAMIENTO (Al hacer clic en el encabezado)
   function ordenarTabla(columna) {
     if (columnaOrden === columna) {
-      ordenAscendente = !ordenAscendente; // Invertir orden si es la misma columna
+      ordenAscendente = !ordenAscendente; 
     } else {
       columnaOrden = columna;
-      ordenAscendente = true; // Por defecto de menor a mayor al cambiar
+      ordenAscendente = true; 
     }
 
-    // Resetear íconos
     document.getElementById('icono-precio').textContent = '↕️';
     document.getElementById('icono-unitario').textContent = '↕️';
     
-    // Poner ícono activo
     const icono = ordenAscendente ? '🔼' : '🔽';
     document.getElementById(`icono-${columna}`).textContent = icono;
 
-    // Volver a dibujar tabla (respetando si hay filtro escrito)
     renderTabla(document.getElementById('buscador').value.toLowerCase());
   }
+
+  // --- NUEVAS FUNCIONES DE CALCULADORA ---
+
+  // Actualizar el dinero total sumando los marcados
+  function actualizarTotal() {
+    let suma = 0;
+    registrosEnMemoria.forEach(reg => {
+      if (idsSeleccionados.has(reg.id)) {
+        suma += (reg.precio * (reg.unidades || 1));
+      }
+    });
+    document.getElementById('suma-total').textContent = formatoCLP(suma);
+    
+    // Revisar si todas las casillas visibles están marcadas para activar el "Seleccionar Todo"
+    const checksVisibles = document.querySelectorAll('.check-fila');
+    const todosMarcados = checksVisibles.length > 0 && Array.from(checksVisibles).every(c => c.checked);
+    document.getElementById('check-all').checked = todosMarcados;
+  }
+
+  // Evento: Al hacer clic en "Seleccionar Todo" (la casilla de arriba)
+  document.getElementById('check-all').addEventListener('change', (e) => {
+    const isChecked = e.target.checked;
+    const checksVisibles = document.querySelectorAll('.check-fila');
+    
+    checksVisibles.forEach(check => {
+      check.checked = isChecked;
+      const id = check.getAttribute('data-id');
+      if (isChecked) {
+        idsSeleccionados.add(id);
+      } else {
+        idsSeleccionados.delete(id);
+      }
+    });
+    actualizarTotal();
+  });
+
+  // Evento: Al hacer clic en una casilla individual
+  document.querySelector('#tabla-registros').addEventListener('change', (e) => {
+    if (e.target.classList.contains('check-fila')) {
+      const id = e.target.getAttribute('data-id');
+      if (e.target.checked) {
+        idsSeleccionados.add(id);
+      } else {
+        idsSeleccionados.delete(id);
+      }
+      actualizarTotal();
+    }
+  });
+
 
   // --- BOTÓN "ANALIZAR PRECIO" ---
   document.getElementById('miForm').addEventListener('submit', (e) => {
     e.preventDefault();
     
-    // Aplicamos normalizador a producto y marca (SOPROLE = Soprole)
     const prodLimpio = normalizarTexto(e.target.producto.value);
     const marcaLimpia = normalizarTexto(e.target.marca.value);
 
@@ -244,7 +296,6 @@
       registroPendiente.unidades
     );
 
-    // Búsqueda histórica (Exacta y limpia gracias al normalizador)
     const historial = registrosEnMemoria.filter(r => 
       normalizarTexto(r.producto) === prodLimpio && normalizarTexto(r.marca) === marcaLimpia
     );
@@ -311,7 +362,9 @@
       await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify(registroPendiente) });
       registrosEnMemoria.push(registroPendiente);
       
-      // Actualizar la lista de sugerencias con este nuevo dato
+      // Auto-seleccionar el artículo recién comprado para la suma
+      idsSeleccionados.add(registroPendiente.id);
+
       actualizarSugerencias();
       renderTabla(document.getElementById('buscador').value.toLowerCase());
       
@@ -338,7 +391,6 @@
       registrosEnMemoria = Array.isArray(data) ? data : [];
       estado.textContent = '';
       
-      // Cargar sugerencias al iniciar
       actualizarSugerencias();
       renderTabla();
     } catch (e) {
@@ -354,7 +406,6 @@
     const tbody = document.querySelector('#tabla-registros tbody');
     tbody.innerHTML = '';
     
-    // 1. Filtrar (y clonar arreglo para no afectar original)
     let registrosMostrar = [...registrosEnMemoria];
 
     if (filtro) {
@@ -365,7 +416,6 @@
       );
     }
 
-    // 2. Ordenar si se seleccionó una columna
     if (columnaOrden) {
       registrosMostrar.sort((a, b) => {
         let valA, valB;
@@ -382,16 +432,21 @@
         return 0;
       });
     } else {
-      // Orden por defecto: los más recientes primero (invertir)
       registrosMostrar.reverse();
     }
 
-    // 3. Pintar en pantalla
     registrosMostrar.forEach(reg => {
       const std = calcularPrecioEstandar(reg.precio, reg.cantidad, reg.unidad, reg.unidades || 1);
       const textoStd = std.precioPor ? `${formatoCLP(std.precioPor)} / 1 ${std.unidadStd}` : '-';
+      
+      // Chequear si este producto está en la memoria de selección
+      const isChecked = idsSeleccionados.has(reg.id) ? 'checked' : '';
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td style="text-align: center;">
+          <input type="checkbox" class="check-fila" data-id="${reg.id}" ${isChecked} style="transform: scale(1.3); cursor: pointer;">
+        </td>
         <td>${formatearFechaLocal(reg.fecha)}</td>
         <td><strong>${reg.producto}</strong></td>
         <td>${reg.marca}</td>
@@ -404,6 +459,9 @@
       `;
       tbody.appendChild(tr);
     });
+
+    // Actualizar el estado del total y de la casilla maestra
+    actualizarTotal();
   }
 
   document.querySelector('#tabla-registros').addEventListener('click', async (e) => {
@@ -414,7 +472,11 @@
       try {
         await fetch(SHEETS_URL, { method: 'POST', body: JSON.stringify({ action: 'delete', id: idBorrar }) });
         registrosEnMemoria = registrosEnMemoria.filter(r => r.id !== idBorrar);
-        actualizarSugerencias(); // Actualizar las listas desplegables al borrar
+        
+        // Quitar de los seleccionados si se elimina
+        idsSeleccionados.delete(idBorrar);
+
+        actualizarSugerencias(); 
         renderTabla(document.getElementById('buscador').value.toLowerCase());
       } catch (err) {
         alert('Error al borrar.');
